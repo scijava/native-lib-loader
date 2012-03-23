@@ -1,8 +1,3 @@
-//
-// JniExtractor.java
-//
-
-/*
 Native library loader for extracting and loading native libraries from Java.
 
 Copyright (c) 2010 - 2012, Board of Regents of the University of
@@ -32,37 +27,3 @@ POSSIBILITY OF SUCH DAMAGE.
 The views and conclusions contained in the software and documentation are
 those of the authors and should not be interpreted as representing official
 policies, either expressed or implied, of any organization.
-*/
-
-// This code is derived from Richard van der Hoff's mx-native-loader project:
-// http://opensource.mxtelecom.com/maven/repo/com/wapmx/native/mx-native-loader/1.7/
-// See NOTICE.txt for details.
-
-// Copyright 2006 MX Telecom Ltd
-
-package loci.wapmx.nativeutils.jniloader;
-
-import java.io.File;
-import java.io.IOException;
-
-/**
- * @author Richard van der Hoff <richardv@mxtelecom.com>
- */
-public interface JniExtractor {
-    /**
-     * Extract a JNI library from the classpath to a temporary file.
-     *
-     * @param libPath library path
-     * @param libname System.loadLibrary() compatible library name
-     * @return the extracted file
-     * @throws IOException
-     */
-    public File extractJni(String libPath, String libname) throws IOException;
-
-    /**
-     * Extract all libraries which are registered for auto-extraction to files in the temporary directory.
-     * 
-     * @throws IOException
-     */
-    public void extractRegistered() throws IOException;
-}
