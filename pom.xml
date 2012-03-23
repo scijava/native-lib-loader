@@ -6,15 +6,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>net.imagej</groupId>
-		<artifactId>pom-ij-extra</artifactId>
-		<version>2.0-SNAPSHOT</version>
+		<groupId>com.github.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>1.6</version>
 	</parent>
 
-	<artifactId>native-library-util</artifactId>
+	<artifactId>native-lib-loader</artifactId>
+	<version>2.0-SNAPSHOT</version>
 
-	<name>Native Library Utility</name>
+	<name>Native Library Loader</name>
 	<description>A library for loading native libraries.</description>
+	<url>http://github.com/scijava/native-lib-loader</url>
+	<inceptionYear>2010</inceptionYear>
 
 	<dependencies>
 		<dependency>
@@ -28,10 +31,18 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
+							<!-- TODO: Change base package. -->
 							<packageName>imagej.nativelibrary</packageName>
 						</manifest>
 					</archive>
@@ -39,6 +50,11 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<organization>
+		<name>SciJava</name>
+		<url>http://scijava.github.com/</url>
+	</organization>
 
 	<developers>
 		<developer>
@@ -59,7 +75,34 @@
 		</developer>
 	</developers>
 
-	<!-- NB: for project parent, in case of partial checkout -->
+	<issueManagement>
+		<system>Trac</system>
+		<url>http://trac.imagej.net/</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://jenkins.imagej.net/</url>
+	</ciManagement>
+
+	<mailingLists>
+		<mailingList>
+			<name>scijava</name>
+			<subscribe>http://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>http://groups.google.com/group/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>http://groups.google.com/group/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git://github.com/scijava/native-lib-loader.git</connection>
+		<developerConnection>scm:git@github.com:scijava/native-lib-loader.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://github.com/scijava/native-lib-loader</url>
+	</scm>
+
+	<!-- NB: for parent project -->
 	<repositories>
 		<repository>
 			<id>imagej.releases</id>
