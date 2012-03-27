@@ -34,9 +34,10 @@ those of the authors and should not be interpreted as representing official
 policies, either expressed or implied, of any organization.
 */
 
-package imagej.nativeloader;
+package org.scijava.nativelib;
 
-import imagej.nativelibrary.NativeLibraryUtil;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -45,7 +46,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

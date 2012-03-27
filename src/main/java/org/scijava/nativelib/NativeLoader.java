@@ -40,7 +40,7 @@ policies, either expressed or implied, of any organization.
 
 // Copyright 2006 MX Telecom Ltd
 
-package loci.wapmx.nativeutils.jniloader;
+package org.scijava.nativelib;
 
 import java.io.IOException;
 

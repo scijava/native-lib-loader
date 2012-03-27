@@ -34,7 +34,7 @@ those of the authors and should not be interpreted as representing official
 policies, either expressed or implied, of any organization.
 */
 
-package imagej.nativelibrary;
+package org.scijava.nativelib;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +42,6 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import loci.wapmx.nativeutils.jniloader.DefaultJniExtractor;
-import loci.wapmx.nativeutils.jniloader.JniExtractor;
 
 /**
  * This class is a utility for loading native libraries.

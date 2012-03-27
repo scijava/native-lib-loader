@@ -6,9 +6,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.github.scijava</groupId>
+		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>1.6</version>
+		<version>1.7</version>
 	</parent>
 
 	<artifactId>native-lib-loader</artifactId>
@@ -42,8 +42,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<!-- TODO: Change base package. -->
-							<packageName>imagej.nativelibrary</packageName>
+							<packageName>org.scijava.nativelib</packageName>
 						</manifest>
 					</archive>
 				</configuration>
