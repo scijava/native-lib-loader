@@ -192,10 +192,25 @@ public class NativeLibraryUtil {
      * @param libName
      * @return
      */
-    //TODO This shouldn't be hardcoded in the general-purpose utility class.
-    //TODO Couldn't we just get rid of this version label altogether?
     public static String getVersionedLibraryName(String libName) {
-        return libName + "-1.0-SNAPSHOT";
+        return getVersionedLibraryName(libName, "");
+    }
+
+    /**
+     * Returns the Maven-versioned file name of the native library.
+     *
+     * Note: With the Nar Plugin the class NarSystem.java is built for the
+     * client of this native library and takes care of this versioning
+     * hardcoding.  If the client is "-1.0-SNAPSHOT" so should the native
+     * library be the same version.
+     *
+     * @param libName
+     * @param version
+     * @return
+     */
+    public static String getVersionedLibraryName(String libName, String version)
+    {
+        return libName + (version.length() > 0 ? "-" + version : "");
     }
 
     /**
