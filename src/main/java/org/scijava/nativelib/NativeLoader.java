@@ -53,8 +53,6 @@ import java.io.IOException;
  * META-INF/lib/, with its OS-dependent name. It extracts the library underneath a temporary directory, whose name is
  * given by the System property "java.library.tmpdir", defaulting to "tmplib".
  * <p>
- * Debugging can be enabled for the jni extractor by setting the System property "java.library.debug" to 1.
- * <p>
  * This is complicated by the http://java.sun.com/javase/6/docs/technotes/guides/jni/jni-12.html#libmanage -
  * specifically "The same JNI native library cannot be loaded into more than one class loader". In practice this appears
  * to mean "A JNI library on a given absolute path cannot be loaded by more than one classloader". Native libraries that

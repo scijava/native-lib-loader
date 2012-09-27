@@ -62,13 +62,6 @@ import java.util.logging.Logger;
 public abstract class BaseJniExtractor implements JniExtractor {
     private static final Logger LOGGER = Logger.getLogger("loci.wapmx.nativeutils.jniloader.BaseJniExtractor");
     private static final String JAVA_TMPDIR = "java.io.tmpdir";
-    private static boolean debug = false;
-    static {
-        // initialise the debug switch
-        String s = System.getProperty("java.library.debug");
-        if (s != null && (s.toLowerCase().startsWith("y") || s.startsWith("1")))
-            debug = true;
-    }
     private Class libraryJarClass;
 
     /**
@@ -117,7 +110,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
     /** {@inheritDoc} */
     public File extractJni(String libPath, String libname) throws IOException {
         String mappedlibName = System.mapLibraryName(libname);
-        System.out.println("mappedLib is " + mappedlibName);
+        LOGGER.log(Level.FINE, "mappedLib is " + mappedlibName);
         /*
          * On Darwin, the default mapping is to .jnilib; but we use .dylibs so that library interdependencies are
          * handled correctly. if we don't find a .jnilib, try .dylib instead.
@@ -142,8 +135,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
         }
 
         if (null != lib) {
-            System.out.println("URL is " + lib.toString());
-            System.out.println("URL path is " + lib.getPath());
+            LOGGER.log(Level.FINE, "URL is " + lib.toString());
+            LOGGER.log(Level.FINE, "URL path is " + lib.getPath());
             return extractResource(getJniDir(), lib, mappedlibName);
         }
         else {
@@ -154,13 +147,15 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
     /** {@inheritDoc} */
     public void extractRegistered() throws IOException {
-        if (debug) System.err.println("Extracting libraries registered in classloader " + this.getClass().getClassLoader());
+        LOGGER.log(Level.FINE,
+          "Extracting libraries registered in classloader " +
+          this.getClass().getClassLoader());
         for (int i = 0; i < nativeResourcePaths.length; i++) {
             Enumeration<URL> resources = this.getClass().getClassLoader().getResources(
                     nativeResourcePaths[i] + "AUTOEXTRACT.LIST");
             while (resources.hasMoreElements()) {
                 URL res = resources.nextElement();
-                if (debug) System.err.println("Extracting libraries listed in " + res);
+                LOGGER.log(Level.FINE, "Extracting libraries listed in " + res);
                 BufferedReader r = new BufferedReader(new InputStreamReader(res.openStream(), "UTF-8"));
                 String line;
                 while ((line = r.readLine()) != null) {
@@ -212,8 +207,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
         // to 8.3 filename legacy issues].  Theoretically a problem for ".dylib",
         // but not in practice.)
         File outfile = File.createTempFile(prefix, suffix);
-        if (debug)
-            System.err.println("Extracting '" + resource + "' to '" + outfile.getAbsolutePath() + "'");
+        LOGGER.log(Level.FINE, "Extracting '" + resource + "' to '" + outfile.getAbsolutePath() + "'");
 
         // copy resource stream to temporary file
         FileOutputStream out = new FileOutputStream(outfile);

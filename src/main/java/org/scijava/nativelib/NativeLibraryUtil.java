@@ -327,7 +327,7 @@ public class NativeLibraryUtil {
                     success = true;
                 }
                 catch (IOException e) {
-                    System.out.println("IOException creating DefaultJniExtractor " + e.getMessage());
+                    LOGGER.log(Level.INFO, "IOException creating DefaultJniExtractor", e);
                 }
             }
         }
@@ -360,7 +360,7 @@ public class NativeLibraryUtil {
     private static boolean checkLibraryPath(String propertyName, String directory) {
         String paths[] = getPaths(propertyName);
         for (String path : paths) {
-            System.out.println(path);
+            LOGGER.log(Level.FINE, path);
             if (directory.equals(path)) {
                 return true;
             }
