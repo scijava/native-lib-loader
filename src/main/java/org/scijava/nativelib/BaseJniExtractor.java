@@ -60,7 +60,8 @@ import java.util.logging.Logger;
  * @author Richard van der Hoff <richardv@mxtelecom.com>
  */
 public abstract class BaseJniExtractor implements JniExtractor {
-    private static final Logger LOGGER = Logger.getLogger("loci.wapmx.nativeutils.jniloader.BaseJniExtractor");
+    private static final Logger LOGGER =
+      Logger.getLogger("org.scijava.nativelib.BaseJniExtractor");
     private static final String JAVA_TMPDIR = "java.io.tmpdir";
     private Class libraryJarClass;
 

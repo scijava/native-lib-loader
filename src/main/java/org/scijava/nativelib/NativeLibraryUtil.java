@@ -71,7 +71,7 @@ public class NativeLibraryUtil {
     private static boolean s_skipHack = false;
     private static String s_writableDirectory = null;
 
-    private static final Logger LOGGER = Logger.getLogger("imagej.nativelibrary.NativeLibraryUtil");
+    private static final Logger LOGGER = Logger.getLogger("org.scijava.nativelib.NativeLibraryUtil");
 
     /**
      * Determines the underlying hardware platform and architecture.
