@@ -95,10 +95,10 @@
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git://github.com/scijava/native-lib-loader.git</connection>
-		<developerConnection>scm:git@github.com:scijava/native-lib-loader.git</developerConnection>
+		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
+		<developerConnection>scm:git:git@github.com:scijava/native-lib-loader</developerConnection>
 		<tag>HEAD</tag>
-		<url>http://github.com/scijava/native-lib-loader</url>
+		<url>https://github.com/scijava/native-lib-loader</url>
 	</scm>
 
 	<!-- NB: for parent project -->
