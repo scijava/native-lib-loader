@@ -1,6 +1,6 @@
 Native library loader for extracting and loading native libraries from Java.
 
-Copyright (c) 2010 - 2012, Board of Regents of the University of
+Copyright (c) 2010 - 2014, Board of Regents of the University of
 Wisconsin-Madison and Glencoe Software, Inc.
 
 Redistribution and use in source and binary forms, with or without
