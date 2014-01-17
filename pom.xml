@@ -70,7 +70,7 @@
 
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/</url>
+		<url>http://jenkins.imagej.net/job/native-lib-loader/</url>
 	</ciManagement>
 
 	<mailingLists>
