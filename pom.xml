@@ -64,8 +64,8 @@
 	</developers>
 
 	<issueManagement>
-		<system>Trac</system>
-		<url>http://trac.imagej.net/</url>
+		<system>GitHub Issues</system>
+		<url>https://github.com/scijava/native-lib-loader/issues</url>
 	</issueManagement>
 
 	<ciManagement>
