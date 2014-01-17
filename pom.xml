@@ -47,11 +47,6 @@
 		</plugins>
 	</build>
 
-	<organization>
-		<name>SciJava</name>
-		<url>http://scijava.github.com/</url>
-	</organization>
-
 	<developers>
 		<developer>
 			<id>aivar</id>
