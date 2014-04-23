@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>1.126</version>
+		<version>1.166</version>
 		<relativePath />
 	</parent>
 
@@ -21,7 +21,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -90,13 +89,5 @@
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/native-lib-loader</url>
 	</scm>
-
-	<repositories>
-		<!-- NB: for parent project -->
-		<repository>
-			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
-		</repository>
-	</repositories>
 
 </project>
