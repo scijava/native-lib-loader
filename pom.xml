@@ -17,6 +17,49 @@
 	<url>http://github.com/scijava/native-lib-loader</url>
 	<inceptionYear>2010</inceptionYear>
 
+	<developers>
+		<developer>
+			<id>aivar</id>
+			<name>Aivar Grislis</name>
+			<email>grislis@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/aivar-grislis</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<mailingLists>
+		<mailingList>
+			<name>scijava</name>
+			<subscribe>http://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>http://groups.google.com/group/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>http://groups.google.com/group/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
+		<developerConnection>scm:git:git@github.com:scijava/native-lib-loader</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/scijava/native-lib-loader</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/scijava/native-lib-loader/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://jenkins.imagej.net/job/native-lib-loader/</url>
+	</ciManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -46,48 +89,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<developers>
-		<developer>
-			<id>aivar</id>
-			<name>Aivar Grislis</name>
-			<email>grislis@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/aivar-grislis</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-	</developers>
-
-	<issueManagement>
-		<system>GitHub Issues</system>
-		<url>https://github.com/scijava/native-lib-loader/issues</url>
-	</issueManagement>
-
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/native-lib-loader/</url>
-	</ciManagement>
-
-	<mailingLists>
-		<mailingList>
-			<name>scijava</name>
-			<subscribe>http://groups.google.com/group/scijava</subscribe>
-			<unsubscribe>http://groups.google.com/group/scijava</unsubscribe>
-			<post>scijava@googlegroups.com</post>
-			<archive>http://groups.google.com/group/scijava</archive>
-		</mailingList>
-	</mailingLists>
-
-	<scm>
-		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
-		<developerConnection>scm:git:git@github.com:scijava/native-lib-loader</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/scijava/native-lib-loader</url>
-	</scm>
 
 </project>
