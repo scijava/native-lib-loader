@@ -244,6 +244,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
                 return name.startsWith(prefix) && name.endsWith(suffix);
             }
         });
+        if (files == null) return;
         for (File file : files) {
             // attempt to delete
             try {
