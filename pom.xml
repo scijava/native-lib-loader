@@ -17,6 +17,13 @@
 	<url>http://github.com/scijava/native-lib-loader</url>
 	<inceptionYear>2010</inceptionYear>
 
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<developers>
 		<developer>
 			<id>aivar</id>
@@ -83,6 +90,16 @@
 							<packageName>org.scijava.nativelib</packageName>
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<licenseName>bsd_2</licenseName>
+					<organizationName>Board of Regents of the University of
+Wisconsin-Madison and Glencoe Software, Inc.</organizationName>
+					<projectName>Native library loader for extracting and loading native libraries from Java.</projectName>
 				</configuration>
 			</plugin>
 		</plugins>
