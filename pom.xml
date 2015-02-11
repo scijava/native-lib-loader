@@ -49,12 +49,10 @@
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/native-lib-loader</url>
 	</scm>
-
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/scijava/native-lib-loader/issues</url>
 	</issueManagement>
-
 	<ciManagement>
 		<system>Jenkins</system>
 		<url>http://jenkins.imagej.net/job/native-lib-loader/</url>
