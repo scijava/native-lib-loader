@@ -32,7 +32,6 @@ package org.scijava.nativelib;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,9 +66,9 @@ import java.util.logging.Logger;
  */
 public class NativeLibraryUtil {
     public static enum Architecture
-        { UNKNOWN, LINUX_32, LINUX_64, WINDOWS_32, WINDOWS_64, OSX_32, OSX_64, OSX_PPC };
+        { UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, WINDOWS_32, WINDOWS_64, OSX_32, OSX_64, OSX_PPC };
     private static enum Processor
-        { UNKNOWN, INTEL_32, INTEL_64, PPC };
+        { UNKNOWN, INTEL_32, INTEL_64, PPC, ARM };
     private static Architecture architecture = Architecture.UNKNOWN;
     private static final String DELIM = "/";
     private static final String JAVA_TMPDIR = "java.io.tmpdir";
@@ -91,6 +90,9 @@ public class NativeLibraryUtil {
                     }
                     else if (Processor.INTEL_64 == processor) {
                         architecture = Architecture.LINUX_64;
+                    }
+                    else if (Processor.ARM == processor) {
+                        architecture = Architecture.LINUX_ARM;
                     }
                 }
                 else if (name.indexOf("win") >= 0) {
@@ -130,7 +132,10 @@ public class NativeLibraryUtil {
         // Note that this is actually the architecture of the installed JVM.
         String arch = System.getProperty("os.arch").toLowerCase();
 
-        if (arch.indexOf("ppc") >= 0) {
+        if (arch.indexOf("arm") >= 0) {
+            processor = Processor.ARM;
+        }
+        else if (arch.indexOf("ppc") >= 0) {
             processor = Processor.PPC;
         }
         else if (arch.indexOf("86") >= 0 || arch.indexOf("amd") >= 0) {
@@ -167,6 +172,7 @@ public class NativeLibraryUtil {
         switch (getArchitecture()) {
             case LINUX_32:
             case LINUX_64:
+            case LINUX_ARM:
                 name = libName + ".so";
                 break;
             case WINDOWS_32:
