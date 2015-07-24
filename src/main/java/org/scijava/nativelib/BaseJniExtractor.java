@@ -119,11 +119,22 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
         lib = libraryJarClass.getClassLoader().getResource(libPath + mappedlibName);
         if (null == lib) {
+            /*
+             * On OS X, the default mapping changed from .jnilib to .dylib as of JDK 7, so
+             * we need to be prepared for the actual library and mapLibraryName disagreeing
+             * in either direction. 
+             */
             if (mappedlibName.endsWith(".jnilib")) {
                 lib = this.getClass().getClassLoader().getResource(
                         libPath + mappedlibName.substring(0, mappedlibName.length() - 7) + ".dylib");
                 if (null != lib) {
                     mappedlibName = mappedlibName.substring(0, mappedlibName.length() - 7) + ".dylib";
+                }
+            } else if (mappedlibName.endsWith(".dylib")) {
+                lib = this.getClass().getClassLoader().getResource(
+                        libPath + mappedlibName.substring(0, mappedlibName.length() - 6) + ".jnilib");
+                if (null != lib) {
+                    mappedlibName = mappedlibName.substring(0, mappedlibName.length() - 6) + ".jnilib";
                 }
             }
 
