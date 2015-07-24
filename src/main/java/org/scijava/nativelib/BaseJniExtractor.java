@@ -124,20 +124,20 @@ public abstract class BaseJniExtractor implements JniExtractor {
              * we need to be prepared for the actual library and mapLibraryName disagreeing
              * in either direction. 
              */
+            final String altLibName;
             if (mappedlibName.endsWith(".jnilib")) {
-                lib = this.getClass().getClassLoader().getResource(
-                        libPath + mappedlibName.substring(0, mappedlibName.length() - 7) + ".dylib");
-                if (null != lib) {
-                    mappedlibName = mappedlibName.substring(0, mappedlibName.length() - 7) + ".dylib";
-                }
+                altLibName = mappedlibName.substring(0, mappedlibName.length() - 7) + ".dylib";
             } else if (mappedlibName.endsWith(".dylib")) {
-                lib = this.getClass().getClassLoader().getResource(
-                        libPath + mappedlibName.substring(0, mappedlibName.length() - 6) + ".jnilib");
-                if (null != lib) {
-                    mappedlibName = mappedlibName.substring(0, mappedlibName.length() - 6) + ".jnilib";
+                altLibName = mappedlibName.substring(0, mappedlibName.length() - 6) + ".jnilib";
+            } else {
+                altLibName = null;
+            }
+            if (altLibName != null) {
+                lib = getClass().getClassLoader().getResource(libPath + altLibName);
+                if (lib != null) {
+                    mappedlibName = altLibName;
                 }
             }
-
         }
 
         if (null != lib) {
