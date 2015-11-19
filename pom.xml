@@ -26,19 +26,82 @@
 
 	<developers>
 		<developer>
-			<id>aivar</id>
-			<name>Aivar Grislis</name>
-			<email>grislis@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/aivar-grislis</url>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<email>ctrueden@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/curtis-rueden</url>
 			<organization>UW-Madison LOCI</organization>
 			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
 			<roles>
-				<role>architect</role>
+				<role>lead</role>
 				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+		<developer>
+			<id>hinerm</id>
+			<name>Mark Hiner</name>
+			<email>hiner@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/mark-hiner</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
 			<timezone>-6</timezone>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Aivar Grislis</name>
+			<url>http://loci.wisc.edu/people/aivar-grislis</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles><role>founder</role></roles>
+			<properties><id>grislis</id></properties>
+		</contributor>
+		<contributor>
+			<name>Johannes Schindelin</name>
+			<url>http://imagej.net/User:Schindelin</url>
+			<properties><id>dscho</id></properties>
+		</contributor>
+		<contributor>
+			<name>Melissa Linkert</name>
+			<url>https://www.openmicroscopy.org/site/about/development-teams/glencoe-software</url>
+			<organization>Glencoe Software</organization>
+			<organizationUrl>http://glencoesoftware.com/</organizationUrl>
+			<timezone>-6</timezone>
+			<properties><id>melissalinkert</id></properties>
+		</contributor>
+		<contributor>
+			<name>Sebastien Besson</name>
+			<url>https://www.openmicroscopy.org/site/about/development-teams/jason</url>
+			<organization>Swedlow Lab, University of Dundee</organization>
+			<organizationUrl>http://www.lifesci.dundee.ac.uk/gre/staff/jason-swedlow</organizationUrl>
+			<timezone>+1</timezone>
+			<properties><id>sbesson</id></properties>
+		</contributor>
+		<contributor>
+			<name>Mark J H</name>
+			<organization>MX Telecom</organization>
+		</contributor>
+		<contributor>
+			<name>Richard van der Hoff</name>
+			<organization>MX Telecom</organization>
+			<roles><role>founder</role></roles>
+		</contributor>
+		<contributor><name>Scott Cyphers</name></contributor>
+		<contributor><name>Yuriy Cherniavsky</name></contributor>
+	</contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
