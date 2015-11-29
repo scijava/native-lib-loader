@@ -101,6 +101,11 @@
 		</contributor>
 		<contributor><name>Scott Cyphers</name></contributor>
 		<contributor><name>Yuriy Cherniavsky</name></contributor>
+		<contributor>
+			<name>Martin W. Kirst</name>
+			<url>https://github.com/nitram509</url>
+			<properties><id>nitram509</id></properties>
+		</contributor>
 	</contributors>
 
 	<scm>
