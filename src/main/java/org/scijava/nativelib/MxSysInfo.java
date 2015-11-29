@@ -96,9 +96,6 @@ public class MxSysInfo {
             catch (IOException e) {
                 extra = "unknown";
             }
-            finally {
-
-            }
         }
 
         return arch + "-" + os + "-" + extra;

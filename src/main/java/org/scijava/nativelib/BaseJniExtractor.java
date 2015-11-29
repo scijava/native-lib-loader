@@ -185,7 +185,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
      * 
      * @param dir the directory to extract the resource to
      * @param resource the resource on the classpath
-     * @param outputname the filename to copy to (within the tmp dir)
+     * @param outputName the filename to copy to (within the tmp dir)
      * @return the extracted file
      * @throws IOException
      */
