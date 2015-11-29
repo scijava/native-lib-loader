@@ -53,7 +53,7 @@ Depending on the platform at runtime, a native library will be unpacked into a t
 and will be loaded from there.
 
 The version information will be grabbed from the MANIFEST.mf file
-from "Implementation-Version" entry. So it's recommended for follow Java's
+from "Implementation-Version" entry. So it's recommended to follow Java's
 [package version information](https://docs.oracle.com/javase/tutorial/deployment/jar/packageman.html)
 convention. 
 
