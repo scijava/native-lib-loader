@@ -1,6 +1,11 @@
-.classpath
-.project
-.settings
-.idea
-*.iml
-/target
+# Maven #
+/target/
+
+# Eclipse #
+/.classpath
+/.project
+/.settings/
+
+# IDEA #
+/.idea/
+/*.iml
