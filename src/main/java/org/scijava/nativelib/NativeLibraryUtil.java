@@ -84,7 +84,7 @@ public class NativeLibraryUtil {
             Processor processor = getProcessor();
             if (Processor.UNKNOWN != processor) {
                 String name = System.getProperty("os.name").toLowerCase();
-                if (name.indexOf("nix") >= 0 || name.indexOf("nux") >= 0) {
+                if (name.contains("nix") || name.contains("nux")) {
                     if (Processor.INTEL_32 == processor) {
                         architecture = Architecture.LINUX_32;
                     }
@@ -95,7 +95,7 @@ public class NativeLibraryUtil {
                         architecture = Architecture.LINUX_ARM;
                     }
                 }
-                else if (name.indexOf("win") >= 0) {
+                else if (name.contains("win")) {
                     if (Processor.INTEL_32 == processor) {
                         architecture = Architecture.WINDOWS_32;
                     }
@@ -103,7 +103,7 @@ public class NativeLibraryUtil {
                         architecture = Architecture.WINDOWS_64;
                     }
                 }
-                else if (name.indexOf("mac") >= 0) {
+                else if (name.contains("mac")) {
                     if (Processor.INTEL_32 == processor) {
                         architecture = Architecture.OSX_32;
                     }
@@ -132,15 +132,15 @@ public class NativeLibraryUtil {
         // Note that this is actually the architecture of the installed JVM.
         String arch = System.getProperty("os.arch").toLowerCase();
 
-        if (arch.indexOf("arm") >= 0) {
+        if (arch.contains("arm")) {
             processor = Processor.ARM;
         }
-        else if (arch.indexOf("ppc") >= 0) {
+        else if (arch.contains("ppc")) {
             processor = Processor.PPC;
         }
-        else if (arch.indexOf("86") >= 0 || arch.indexOf("amd") >= 0) {
+        else if (arch.contains("86") || arch.contains("amd")) {
             bits = 32;
-            if (arch.indexOf("64") >= 0) {
+            if (arch.contains("64")) {
                 bits = 64;
             }
             processor = (32 == bits) ? Processor.INTEL_32 : Processor.INTEL_64;
@@ -164,7 +164,7 @@ public class NativeLibraryUtil {
     /**
      * Returns the full file name (without path) of the native library.
      *
-     * @param libName
+     * @param libName name of library
      * @return file name
      */
     public static String getPlatformLibraryName(String libName) {
@@ -214,7 +214,8 @@ public class NativeLibraryUtil {
 	 * 
 	 * * = necessary to save version information in manifest
      *
-     * @param libName
+     * @param libraryJarClass any class within the library-containing jar
+     * @param libName name of library
      * @return
      */
     public static String getVersionedLibraryName(Class libraryJarClass, String libName) {

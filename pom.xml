@@ -101,6 +101,11 @@
 		</contributor>
 		<contributor><name>Scott Cyphers</name></contributor>
 		<contributor><name>Yuriy Cherniavsky</name></contributor>
+		<contributor>
+			<name>Martin W. Kirst</name>
+			<url>https://github.com/nitram509</url>
+			<properties><id>nitram509</id></properties>
+		</contributor>
 	</contributors>
 
 	<scm>
@@ -120,8 +125,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>5.12.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

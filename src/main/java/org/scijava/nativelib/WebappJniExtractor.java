@@ -83,9 +83,10 @@ public class WebappJniExtractor extends BaseJniExtractor {
     
     @Override
     protected void finalize() throws Throwable {
+        super.finalize();
         File[] files = jniSubDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            files[i].delete();
+        for (File file : files) {
+            file.delete();
         }
         jniSubDir.delete();
     }

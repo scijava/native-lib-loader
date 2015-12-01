@@ -152,30 +152,39 @@ public abstract class BaseJniExtractor implements JniExtractor {
     /** {@inheritDoc} */
     public void extractRegistered() throws IOException {
         LOGGER.log(Level.FINE,
-          "Extracting libraries registered in classloader " +
-          this.getClass().getClassLoader());
-        for (int i = 0; i < nativeResourcePaths.length; i++) {
+                "Extracting libraries registered in classloader " +
+                        this.getClass().getClassLoader());
+        for (String nativeResourcePath : nativeResourcePaths) {
             Enumeration<URL> resources = this.getClass().getClassLoader().getResources(
-                    nativeResourcePaths[i] + "AUTOEXTRACT.LIST");
+                    nativeResourcePath + "AUTOEXTRACT.LIST");
             while (resources.hasMoreElements()) {
                 URL res = resources.nextElement();
-                LOGGER.log(Level.FINE, "Extracting libraries listed in " + res);
-                BufferedReader r = new BufferedReader(new InputStreamReader(res.openStream(), "UTF-8"));
-                String line;
-                while ((line = r.readLine()) != null) {
-                    URL lib = null;
-                    for (int j = 0; j < nativeResourcePaths.length; j++) {
-                        lib = this.getClass().getClassLoader().getResource(nativeResourcePaths[j] + line);
-                        if (lib != null)
-                            break;
-                    }
-                    if (lib != null) {
-                        extractResource(getNativeDir(), lib, line);
-                    }
-                    else {
-                        throw new IOException("Couldn't find native library " + line + "on the classpath");
-                    }
+                extractLibrariesFromResource(res);
+            }
+        }
+    }
+
+    private void extractLibrariesFromResource(URL resource) throws IOException {
+        LOGGER.log(Level.FINE, "Extracting libraries listed in " + resource);
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(resource.openStream(), "UTF-8"));
+            for (String line; (line = reader.readLine()) != null; ) {
+                URL lib = null;
+                for (String nativeResourcePath : nativeResourcePaths) {
+                    lib = this.getClass().getClassLoader().getResource(nativeResourcePath + line);
+                    if (lib != null)
+                        break;
                 }
+                if (lib != null) {
+                    extractResource(getNativeDir(), lib, line);
+                } else {
+                    throw new IOException("Couldn't find native library " + line + "on the classpath");
+                }
+            }
+        } finally {
+            if (reader != null) {
+                reader.close();
             }
         }
     }
@@ -185,7 +194,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
      * 
      * @param dir the directory to extract the resource to
      * @param resource the resource on the classpath
-     * @param outputname the filename to copy to (within the tmp dir)
+     * @param outputName the filename to copy to (within the tmp dir)
      * @return the extracted file
      * @throws IOException
      */
