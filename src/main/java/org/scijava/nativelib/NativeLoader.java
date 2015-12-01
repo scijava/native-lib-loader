@@ -49,9 +49,9 @@ import java.io.IOException;
  * extracts the library underneath a temporary directory, whose name is given by
  * the System property "java.library.tmpdir", defaulting to "tmplib".
  * <p>
- * This is complicated by the
- * http://java.sun.com/javase/6/docs/technotes/guides/jni/jni-12.html#libmanage
- * - specifically
+ * This is complicated by <a href=
+ * "http://docs.oracle.com/javase/6/docs/technotes/guides/jni/jni-12.html#libmanage"
+ * >Java's library and version management</a> - specifically
  * "The same JNI native library cannot be loaded into more than one class loader"
  * . In practice this appears to mean
  * "A JNI library on a given absolute path cannot be loaded by more than one classloader"
@@ -122,17 +122,8 @@ public class NativeLoader {
 	 *           specified dynamic library
 	 */
 	public static void loadLibrary(final String libname) throws IOException {
-		System.load(jniExtractor.extractJni("", libname).getAbsolutePath()); // TODO
-																																					// pass
-																																					// in
-																																					// library
-																																					// path
-																																					// or
-																																					// get
-																																					// rid
-																																					// of
-																																					// this
-																																					// method
+		// TODO pass in library path or get rid of this method
+		System.load(jniExtractor.extractJni("", libname).getAbsolutePath());
 	}
 
 	/**

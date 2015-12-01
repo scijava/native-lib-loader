@@ -40,10 +40,23 @@ import java.util.logging.Logger;
  * <p>
  * Native libraries should be packaged into a single jar file, with the
  * following directory & file structure:
- * <p>
- * META_INF lib linux_32 libxxx[-vvv].so linux_64 libxxx[-vvv].so osx_32
- * libxxx[-vvv].dylib osx_64 libxxx[-vvv].dylib windows_32 xxx[-vvv].dll
- * windows_64 xxx[-vvv].dll
+ *
+ * <pre>
+ * META_INF
+ *   lib
+ *     linux_32
+ *       libxxx[-vvv].so
+ *     linux_64
+ *       libxxx[-vvv].so
+ *     osx_32
+ *       libxxx[-vvv].dylib
+ *     osx_64
+ *       libxxx[-vvv].dylib
+ *     windows_32
+ *       xxx[-vvv].dll
+ *     windows_64
+ *       xxx[-vvv].dll
+ * </pre>
  * <p>
  * Here "xxx" is the name of the native library and "-vvv" is an optional
  * version number.
@@ -190,13 +203,30 @@ public class NativeLibraryUtil {
 	 * Returns the Maven-versioned file name of the native library. In order for
 	 * this to work Maven needs to save its version number in the jar manifest.
 	 * The version of the library-containing jar and the version encoded in the
-	 * native library names should agree. <build> <plugins> <plugin>
-	 * <artifactId>maven-jar-plugin</artifactId> <inherited>true</inherited> *
-	 * <configuration> <archive> <manifest>
-	 * <packageName>com.example.package</packageName>
-	 * <addDefaultImplementationEntries>true</addDefaultImplementationEntries> *
-	 * </manifest> </archive> </configuration> </plugin> </plugins> </build> * =
-	 * necessary to save version information in manifest
+	 * native library names should agree.
+	 *
+	 * <pre>
+	 * {@code
+	 * <build>
+	 *   <plugins>
+	 *     <plugin>
+	 *       <artifactId>maven-jar-plugin</artifactId>
+	 *         <inherited>true</inherited> *
+	 *         <configuration>
+	 *            <archive>
+	 *              <manifest>
+	 *                <packageName>com.example.package</packageName>
+	 *                <addDefaultImplementationEntries>true</addDefaultImplementationEntries> *
+	 *              </manifest>
+	 *           </archive>
+	 *         </configuration>
+	 *     </plugin>
+	 *   </plugins>
+	 * </build>
+	 *
+	 * * = necessary to save version information in manifest
+	 * }
+	 * </pre>
 	 *
 	 * @param libraryJarClass any class within the library-containing jar
 	 * @param libName name of library
