@@ -66,9 +66,9 @@ import java.util.logging.Logger;
  */
 public class NativeLibraryUtil {
     public static enum Architecture
-        { UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, WINDOWS_32, WINDOWS_64, OSX_32, OSX_64, OSX_PPC };
+        { UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, WINDOWS_32, WINDOWS_64, OSX_32, OSX_64, OSX_PPC }
     private static enum Processor
-        { UNKNOWN, INTEL_32, INTEL_64, PPC, ARM };
+        { UNKNOWN, INTEL_32, INTEL_64, PPC, ARM }
     private static Architecture architecture = Architecture.UNKNOWN;
     private static final String DELIM = "/";
     private static final String JAVA_TMPDIR = "java.io.tmpdir";
