@@ -123,7 +123,7 @@ public class NativeLibraryUtil {
     /**
      * Determines what processor is in use.
      *
-     * @return
+     * @return The processor in use.
      */
     private static Processor getProcessor() {
         Processor processor = Processor.UNKNOWN;
@@ -216,7 +216,7 @@ public class NativeLibraryUtil {
      *
      * @param libraryJarClass any class within the library-containing jar
      * @param libName name of library
-     * @return
+     * @return The Maven-versioned file name of the native library.
      */
     public static String getVersionedLibraryName(Class<?> libraryJarClass, String libName) {
 		String version = libraryJarClass.getPackage().getImplementationVersion();
