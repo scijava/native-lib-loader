@@ -1,16 +1,14 @@
 package org.scijava.nativelib;
 
-import org.testng.annotations.Test;
-
 import java.io.IOException;
+
+import org.junit.Test;
 
 public class NativeLoaderTest {
 
-    @Test(expectedExceptions = IOException.class)
-    public void example_how_to_use() throws Exception {
-
+    @Test(expected = IOException.class)
+    public void exampleHowToUse() throws Exception {
         NativeLoader.loadLibrary("mylib");
-
-        // expect IOException, because this lib does not exists
+        // expect IOException, because this lib does not exist
     }
 }
