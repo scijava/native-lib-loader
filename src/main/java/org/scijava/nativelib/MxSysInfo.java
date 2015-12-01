@@ -42,13 +42,8 @@ public class MxSysInfo {
      * Can be overridden by specifying a mx.sysinfo system property
      */
     public static String getMxSysInfo() {
-        String mxSysInfo = System.getProperty("mx.sysinfo");
-        if (mxSysInfo != null) {
-            return mxSysInfo;
-        }
-        else {
-            return guessMxSysInfo();
-        }
+        final String mxSysInfo = System.getProperty("mx.sysinfo");
+        return mxSysInfo != null ? mxSysInfo : guessMxSysInfo();
     }
     
     /**
