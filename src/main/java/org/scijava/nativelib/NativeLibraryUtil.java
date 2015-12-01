@@ -218,7 +218,7 @@ public class NativeLibraryUtil {
      * @param libName name of library
      * @return
      */
-    public static String getVersionedLibraryName(Class libraryJarClass, String libName) {
+    public static String getVersionedLibraryName(Class<?> libraryJarClass, String libName) {
 		String version = libraryJarClass.getPackage().getImplementationVersion();
 		if (null != version && version.length() > 0) {
 			libName += "-" + version;
@@ -234,7 +234,7 @@ public class NativeLibraryUtil {
 	 * @param libName name of library
 	 * @return whether or not successful
 	 */
-	public static boolean loadVersionedNativeLibrary(Class libraryJarClass, String libName) {
+	public static boolean loadVersionedNativeLibrary(Class<?> libraryJarClass, String libName) {
 		// append version information to native library name
         libName = getVersionedLibraryName(libraryJarClass, libName);
 		
@@ -248,7 +248,7 @@ public class NativeLibraryUtil {
      * @param libName name of library
      * @return whether or not successful
      */
-    public static boolean loadNativeLibrary(Class libraryJarClass, String libName) {
+    public static boolean loadNativeLibrary(Class<?> libraryJarClass, String libName) {
         boolean success = false;
 		
         if (Architecture.UNKNOWN == getArchitecture()) {

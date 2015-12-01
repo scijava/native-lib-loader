@@ -57,7 +57,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
     private static final Logger LOGGER =
       Logger.getLogger("org.scijava.nativelib.BaseJniExtractor");
     private static final String JAVA_TMPDIR = "java.io.tmpdir";
-    private Class libraryJarClass;
+    private Class<?> libraryJarClass;
 
     /**
      * We use a resource path of the form META-INF/lib/${mx.sysinfo}/ This way native builds for multiple architectures
@@ -70,11 +70,11 @@ public abstract class BaseJniExtractor implements JniExtractor {
         init(null);
     }
 
-    public BaseJniExtractor(Class libraryJarClass) throws IOException {
+    public BaseJniExtractor(Class<?> libraryJarClass) throws IOException {
         init(libraryJarClass);
     }
 
-    private void init(Class libraryJarClass) throws IOException {
+    private void init(Class<?> libraryJarClass) throws IOException {
         this.libraryJarClass = libraryJarClass;
 
         String mxSysInfo = MxSysInfo.getMxSysInfo();

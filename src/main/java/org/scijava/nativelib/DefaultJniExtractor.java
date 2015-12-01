@@ -57,7 +57,7 @@ public class DefaultJniExtractor extends BaseJniExtractor {
         init("tmplib");
     }
 
-    public DefaultJniExtractor(Class libraryJarClass, String tmplib) throws IOException {
+    public DefaultJniExtractor(Class<?> libraryJarClass, String tmplib) throws IOException {
         super(libraryJarClass);
         init(tmplib);
     }
