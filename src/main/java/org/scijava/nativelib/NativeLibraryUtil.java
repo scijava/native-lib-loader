@@ -32,8 +32,8 @@ package org.scijava.nativelib;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is a utility for loading native libraries.
@@ -80,8 +80,8 @@ public class NativeLibraryUtil {
 	private static Architecture architecture = Architecture.UNKNOWN;
 	private static final String DELIM = "/";
 	private static final String JAVA_TMPDIR = "java.io.tmpdir";
-	private static final Logger LOGGER = Logger
-		.getLogger("org.scijava.nativelib.NativeLibraryUtil");
+	private static final Logger LOGGER = LoggerFactory.getLogger(
+		"org.scijava.nativelib.NativeLibraryUtil");
 
 	/**
 	 * Determines the underlying hardware platform and architecture.
@@ -125,7 +125,7 @@ public class NativeLibraryUtil {
 				}
 			}
 		}
-		LOGGER.log(Level.FINE, "architecture is " + architecture + " os.name is " +
+		LOGGER.debug("architecture is " + architecture + " os.name is " +
 			System.getProperty("os.name").toLowerCase());
 		return architecture;
 	}
@@ -155,7 +155,7 @@ public class NativeLibraryUtil {
 			}
 			processor = (32 == bits) ? Processor.INTEL_32 : Processor.INTEL_64;
 		}
-		LOGGER.log(Level.FINE, "processor is " + processor + " os.arch is " +
+		LOGGER.debug("processor is " + processor + " os.arch is " +
 			System.getProperty("os.arch").toLowerCase());
 		return processor;
 	}
@@ -168,7 +168,7 @@ public class NativeLibraryUtil {
 	public static String getPlatformLibraryPath() {
 		String path = "META-INF" + DELIM + "lib" + DELIM;
 		path += getArchitecture().name().toLowerCase() + DELIM;
-		LOGGER.log(Level.FINE, "platform specific path is " + path);
+		LOGGER.debug("platform specific path is " + path);
 		return path;
 	}
 
@@ -195,7 +195,7 @@ public class NativeLibraryUtil {
 				name = "lib" + libName + ".dylib";
 				break;
 		}
-		LOGGER.log(Level.FINE, "native library name " + name);
+		LOGGER.debug("native library name " + name);
 		return name;
 	}
 
@@ -273,8 +273,7 @@ public class NativeLibraryUtil {
 		boolean success = false;
 
 		if (Architecture.UNKNOWN == getArchitecture()) {
-			LOGGER.log(Level.WARNING,
-				"No native library available for this platform.");
+			LOGGER.warn("No native library available for this platform.");
 		}
 		else {
 			try {
@@ -293,14 +292,13 @@ public class NativeLibraryUtil {
 				success = true;
 			}
 			catch (final IOException e) {
-				LOGGER
-					.log(Level.WARNING, "IOException creating DefaultJniExtractor", e);
+				LOGGER.warn("IOException creating DefaultJniExtractor", e);
 			}
 			catch (final SecurityException e) {
-				LOGGER.log(Level.WARNING, "Can't load dynamic library", e);
+				LOGGER.warn("Can't load dynamic library", e);
 			}
 			catch (final UnsatisfiedLinkError e) {
-				LOGGER.log(Level.WARNING, "Problem with library", e);
+				LOGGER.warn("Problem with library", e);
 			}
 		}
 		return success;
