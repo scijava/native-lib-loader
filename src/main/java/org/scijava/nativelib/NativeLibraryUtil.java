@@ -292,13 +292,13 @@ public class NativeLibraryUtil {
 				success = true;
 			}
 			catch (final IOException e) {
-				LOGGER.warn("IOException creating DefaultJniExtractor", e);
+				LOGGER.debug("IOException creating DefaultJniExtractor", e);
 			}
 			catch (final SecurityException e) {
-				LOGGER.warn("Can't load dynamic library", e);
+				LOGGER.debug("Can't load dynamic library", e);
 			}
 			catch (final UnsatisfiedLinkError e) {
-				LOGGER.warn("Problem with library", e);
+				LOGGER.debug("Problem with library", e);
 			}
 		}
 		return success;
