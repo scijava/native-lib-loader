@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * following directory & file structure:
  *
  * <pre>
- * META_INF
+ * META-INF
  *   lib
  *     linux_32
  *       libxxx[-vvv].so

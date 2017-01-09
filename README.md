@@ -34,7 +34,7 @@ Native libraries should be packaged into a single jar file, with the
 following directory & file structure:
 
 ```
-/META_INF
+/META-INF
   /lib
     /linux_32
        libxxx[-vvv].so
