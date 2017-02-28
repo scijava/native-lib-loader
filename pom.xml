@@ -94,8 +94,8 @@
 		<url>https://github.com/scijava/native-lib-loader/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/native-lib-loader/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/scijava/native-lib-loader</url>
 	</ciManagement>
 
 	<dependencies>
