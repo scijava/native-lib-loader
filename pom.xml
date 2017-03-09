@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>9.0.0</version>
+		<version>14.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -16,7 +16,10 @@
 	<description>A library for loading native libraries.</description>
 	<url>http://github.com/scijava/native-lib-loader</url>
 	<inceptionYear>2010</inceptionYear>
-
+	<organization>
+		<name>SciJava</name>
+		<url>https://scijava.org/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
@@ -83,6 +86,16 @@
 		</contributor>
 	</contributors>
 
+	<mailingLists>
+		<mailingList>
+			<name>SciJava</name>
+			<subscribe>https://groups.google.com/group/scijava</subscribe>
+			<unsubscribe>https://groups.google.com/group/scijava</unsubscribe>
+			<post>scijava@googlegroups.com</post>
+			<archive>https://groups.google.com/group/scijava</archive>
+		</mailingList>
+	</mailingLists>
+
 	<scm>
 		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
 		<developerConnection>scm:git:git@github.com:scijava/native-lib-loader</developerConnection>
@@ -98,6 +111,15 @@
 		<url>https://travis-ci.org/scijava/native-lib-loader</url>
 	</ciManagement>
 
+	<properties>
+		<scijava.jvm.version>1.5</scijava.jvm.version>
+		<package-name>org.scijava.nativelib</package-name>
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
+		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -110,37 +132,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<packageName>org.scijava.nativelib</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<organizationName>Board of Regents of the University of
-Wisconsin-Madison and Glencoe Software, Inc.</organizationName>
-					<projectName>Native library loader for extracting and loading native libraries from Java.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
