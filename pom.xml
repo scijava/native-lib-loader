@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -14,7 +14,7 @@
 
 	<name>Native Library Loader</name>
 	<description>A library for loading native libraries.</description>
-	<url>http://github.com/scijava/native-lib-loader</url>
+	<url>https://github.com/scijava/native-lib-loader</url>
 	<inceptionYear>2010</inceptionYear>
 	<organization>
 		<name>SciJava</name>
@@ -31,7 +31,7 @@
 		<developer>
 			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
-			<url>http://imagej.net/User:Rueden</url>
+			<url>https://imagej.net/User:Rueden</url>
 			<roles>
 				<role>lead</role>
 				<role>developer</role>
@@ -45,28 +45,28 @@
 	<contributors>
 		<contributor>
 			<name>Aivar Grislis</name>
-			<url>http://imagej.net/User:Grislis</url>
+			<url>https://imagej.net/User:Grislis</url>
 			<roles><role>founder</role></roles>
 			<properties><id>grislis</id></properties>
 		</contributor>
 		<contributor>
 			<name>Johannes Schindelin</name>
-			<url>http://imagej.net/User:Schindelin</url>
+			<url>https://imagej.net/User:Schindelin</url>
 			<properties><id>dscho</id></properties>
 		</contributor>
 		<contributor>
 			<name>Mark Hiner</name>
-			<url>http://imagej.net/User:Hinerm</url>
+			<url>https://imagej.net/User:Hinerm</url>
 			<properties><id>hinerm</id></properties>
 		</contributor>
 		<contributor>
 			<name>Melissa Linkert</name>
-			<url>http://imagej.net/User:Linkert</url>
+			<url>https://imagej.net/User:Linkert</url>
 			<properties><id>melissalinkert</id></properties>
 		</contributor>
 		<contributor>
 			<name>Sebastien Besson</name>
-			<url>http://imagej.net/User:Sbesson</url>
+			<url>https://imagej.net/User:Sbesson</url>
 			<properties><id>sbesson</id></properties>
 		</contributor>
 		<contributor>
