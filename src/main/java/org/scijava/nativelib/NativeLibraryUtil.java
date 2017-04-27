@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * This class is a utility for loading native libraries.
  * <p>
  * Native libraries should be packaged into a single jar file, with the
- * following directory & file structure:
+ * following directory and file structure:
  *
  * <pre>
  * META-INF

@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Richard van der Hoff <richardv@mxtelecom.com>
+ * @author Richard van der Hoff (richardv@mxtelecom.com)
  */
 public abstract class BaseJniExtractor implements JniExtractor {
 

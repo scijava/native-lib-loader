@@ -40,7 +40,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Richard van der Hoff <richardv@mxtelecom.com>
+ * @author Richard van der Hoff (richardv@mxtelecom.com)
  */
 public interface JniExtractor {
 

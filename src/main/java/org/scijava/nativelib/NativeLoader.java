@@ -74,7 +74,7 @@ import java.io.IOException;
  * "tmplib" directory (or other directory as overridden by "java.library.tmpdir"
  * as above).
  *
- * @author Richard van der Hoff <richardv@mxtelecom.com>
+ * @author Richard van der Hoff (richardv@mxtelecom.com)
  */
 public class NativeLoader {
 

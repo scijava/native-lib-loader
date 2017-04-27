@@ -45,7 +45,7 @@ import java.io.IOException;
  * WARNING: This extractor can result in UnsatisifiedLinkError if it is used in
  * more than one classloader.
  * 
- * @author Richard van der Hoff <richardv@mxtelecom.com>
+ * @author Richard van der Hoff (richardv@mxtelecom.com)
  */
 public class DefaultJniExtractor extends BaseJniExtractor {
 
