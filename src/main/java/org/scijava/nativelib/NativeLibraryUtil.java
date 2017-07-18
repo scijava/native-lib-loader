@@ -48,6 +48,10 @@ import org.slf4j.LoggerFactory;
  *       libxxx[-vvv].so
  *     linux_64
  *       libxxx[-vvv].so
+ *     linux_arm
+ *       libxxx[-vvv].so
+ *     linux_arm64
+ *       libxxx[-vvv].so
  *     osx_32
  *       libxxx[-vvv].dylib
  *     osx_64
@@ -69,12 +73,12 @@ import org.slf4j.LoggerFactory;
 public class NativeLibraryUtil {
 
 	public static enum Architecture {
-		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, WINDOWS_32, WINDOWS_64, OSX_32,
+		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, WINDOWS_32, WINDOWS_64, OSX_32,
 			OSX_64, OSX_PPC
 	}
 
 	private static enum Processor {
-		UNKNOWN, INTEL_32, INTEL_64, PPC, ARM
+		UNKNOWN, INTEL_32, INTEL_64, PPC, ARM, AARCH_64
 	}
 
 	private static Architecture architecture = Architecture.UNKNOWN;
@@ -102,6 +106,9 @@ public class NativeLibraryUtil {
 					}
 					else if (Processor.ARM == processor) {
 						architecture = Architecture.LINUX_ARM;
+					}
+					else if (Processor.AARCH_64 == processor) {
+						architecture = Architecture.LINUX_ARM64;
 					}
 				}
 				else if (name.contains("win")) {
@@ -145,6 +152,9 @@ public class NativeLibraryUtil {
 		if (arch.contains("arm")) {
 			processor = Processor.ARM;
 		}
+		else if (arch.contains("aarch64")) {
+			processor = Processor.AARCH_64;
+		}
 		else if (arch.contains("ppc")) {
 			processor = Processor.PPC;
 		}
@@ -184,6 +194,7 @@ public class NativeLibraryUtil {
 			case LINUX_32:
 			case LINUX_64:
 			case LINUX_ARM:
+			case LINUX_ARM64:
 				name = libName + ".so";
 				break;
 			case WINDOWS_32:
