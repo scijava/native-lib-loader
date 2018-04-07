@@ -45,6 +45,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Enumeration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +59,12 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.BaseJniExtractor");
-	private static final String JAVA_TMPDIR = "java.io.tmpdir";
+	protected static final String JAVA_TMPDIR = "java.io.tmpdir";
+	protected static final String ALTR_TMPDIR = "./tmplib";
+	protected static final String TMP_PREFIX = "nativelib-loader_";
 	private static final String LEFTOVER_MIN_AGE = "org.scijava.nativelib.leftoverMinAgeMs";
 	private static final long LEFTOVER_MIN_AGE_DEFAULT = 5 * 60 * 1000; // 5 minutes
+
 	private Class<?> libraryJarClass;
 
 	/**
@@ -89,6 +95,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		else {
 			nativeResourcePaths = new String[] { "META-INF/lib/" };
 		}
+		// clean up leftover libraries from previous runs
+		deleteLeftoverFiles();
 	}
 
 	/**
@@ -223,27 +231,11 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		final String outputName) throws IOException
 	{
 
-		final InputStream in = resource.openStream(); // TODO there's also a
-																									// getResourceAsStream
+		final InputStream in = resource.openStream();
+		// TODO there's also a getResourceAsStream
 
-		// create a temporary file with same suffix (i.e. ".dylib")
-		String prefix = outputName;
-		String suffix = null;
-		final int lastDotIndex = outputName.lastIndexOf('.');
-		if (-1 != lastDotIndex) {
-			prefix = outputName.substring(0, lastDotIndex);
-			suffix = outputName.substring(lastDotIndex);
-		}
-
-		// clean up leftover libraries from previous runs
-		deleteLeftoverFiles(prefix, suffix);
-
-		// make a temporary file with our prefix and suffix
-		//
-		// (CreateTempFile javadoc only guarantees 3 characters of suffix [due
-		// to 8.3 filename legacy issues]. Theoretically a problem for ".dylib",
-		// but not in practice.)
-		final File outfile = File.createTempFile(prefix, suffix);
+		// make a lib file with exactly the same lib name
+		final File outfile = new File(getJniDir(), outputName);
 		LOGGER.debug("Extracting '" + resource + "' to '" +
 			outfile.getAbsolutePath() + "'");
 
@@ -274,16 +266,13 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 * Another issue is that createTempFile only guarantees to use the first three
 	 * characters of the prefix, so I could delete a similarly-named temporary
 	 * shared library if I haven't loaded it yet.
-	 *
-	 * @param prefix
-	 * @param suffix
 	 */
-	void deleteLeftoverFiles(final String prefix, final String suffix) {
-		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR));
+	void deleteLeftoverFiles() {
+		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
 		final File[] files = tmpDirectory.listFiles(new FilenameFilter() {
 
 			public boolean accept(final File dir, final String name) {
-				return name.startsWith(prefix) && name.endsWith(suffix);
+				return name.startsWith(TMP_PREFIX);
 			}
 		});
 		if (files == null) return;
@@ -297,9 +286,12 @@ public abstract class BaseJniExtractor implements JniExtractor {
 					continue;
 				}
 				LOGGER.debug("Deleting leftover file: {}", file);
+				Files.walk(file.toPath()).map(Path::toFile)
+						.sorted(Comparator.reverseOrder())
+						.forEachOrdered(File::delete);
 				file.delete();
 			}
-			catch (final SecurityException e) {
+			catch (final IOException e) {
 				// not likely
 			}
 		}
