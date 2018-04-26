@@ -83,7 +83,6 @@ public class NativeLibraryUtil {
 
 	private static Architecture architecture = Architecture.UNKNOWN;
 	private static final String DELIM = "/";
-	private static final String JAVA_TMPDIR = "java.io.tmpdir";
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.NativeLibraryUtil");
 
@@ -288,10 +287,8 @@ public class NativeLibraryUtil {
 		}
 		else {
 			try {
-				// will extract library to temporary directory
-				final String tmpDirectory = System.getProperty(JAVA_TMPDIR);
 				final JniExtractor jniExtractor =
-					new DefaultJniExtractor(libraryJarClass, tmpDirectory);
+					new DefaultJniExtractor(libraryJarClass);
 
 				// do extraction
 				final File extractedFile =

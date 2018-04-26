@@ -38,9 +38,6 @@ package org.scijava.nativelib;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * JniExtractor suitable for single application deployments per virtual machine
@@ -57,29 +54,10 @@ public class DefaultJniExtractor extends BaseJniExtractor {
 	 */
 	private File nativeDir;
 
-	public DefaultJniExtractor() throws IOException {
-		super(null);
-		init(ALTR_TMPDIR);
-	}
-
-	public DefaultJniExtractor(final Class<?> libraryJarClass, final String tmplib)
-		throws IOException
-	{
+	public DefaultJniExtractor(final Class<?> libraryJarClass) throws IOException {
 		super(libraryJarClass);
-		init(tmplib);
-	}
 
-	void init(final String tmplib) throws IOException {
-		// If system temporary directory is not available, use tmplib
-		Path tmpDir = Paths.get(System.getProperty(JAVA_TMPDIR, tmplib));
-		if (!Files.isDirectory(tmpDir)) {
-			tmpDir.toFile().mkdirs();
-			if (!Files.isDirectory(tmpDir)) {
-				throw new IOException(
-					"Unable to create temporary directory " + tmpDir);
-			}
-		}
-		nativeDir = Files.createTempDirectory(tmpDir, TMP_PREFIX).toFile();
+		nativeDir = getTempDir();
 		// Order of operations is such that we do not error if we are racing with
 		// another thread to create the directory.
 		nativeDir.mkdirs();

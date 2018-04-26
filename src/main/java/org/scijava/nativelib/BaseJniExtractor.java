@@ -46,9 +46,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +96,33 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		}
 		// clean up leftover libraries from previous runs
 		deleteLeftoverFiles();
+	}
+
+	private static boolean deleteRecursively(final File directory) {
+		if (directory == null) return true;
+		final File[] list = directory.listFiles();
+		if (list == null) return true;
+		for (final File file : list) {
+			if (file.isFile()) {
+				if (!file.delete()) return false;
+			}
+			else if (file.isDirectory()) {
+				if (!deleteRecursively(file)) return false;
+			}
+		}
+		return directory.delete();
+	}
+
+	protected static File getTempDir() throws IOException {
+		// creates a temporary directory for hosting extracted files
+		// If system tempdir is not available, use tmplib
+		File tmpDir = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
+		if (!tmpDir.isDirectory()) {
+			tmpDir.mkdirs();
+			if (!tmpDir.isDirectory())
+				throw new IOException("Unable to create temporary directory " + tmpDir);
+		}
+		return Files.createTempDirectory(tmpDir.toPath(), TMP_PREFIX).toFile();
 	}
 
 	/**
@@ -269,31 +295,23 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 */
 	void deleteLeftoverFiles() {
 		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
-		final File[] files = tmpDirectory.listFiles(new FilenameFilter() {
+		final File[] folders = tmpDirectory.listFiles(new FilenameFilter() {
 
 			public boolean accept(final File dir, final String name) {
 				return name.startsWith(TMP_PREFIX);
 			}
 		});
-		if (files == null) return;
+		if (folders == null) return;
 		long leftoverMinAge = getLeftoverMinAge();
-		for (final File file : files) {
+		for (final File folder : folders) {
 			// attempt to delete
-			try {
-				long age = System.currentTimeMillis() - file.lastModified();
-				if (age < leftoverMinAge) {
-					LOGGER.debug("Not deleting leftover file {}: is {}ms old", file, age);
-					continue;
-				}
-				LOGGER.debug("Deleting leftover file: {}", file);
-				Files.walk(file.toPath()).map(Path::toFile)
-						.sorted(Comparator.reverseOrder())
-						.forEachOrdered(File::delete);
-				file.delete();
+			long age = System.currentTimeMillis() - folder.lastModified();
+			if (age < leftoverMinAge) {
+				LOGGER.debug("Not deleting leftover folder {}: is {}ms old", folder, age);
+				continue;
 			}
-			catch (final IOException e) {
-				// not likely
-			}
+			LOGGER.debug("Deleting leftover folder: {}", folder);
+			deleteRecursively(folder);
 		}
 	}
 

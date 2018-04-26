@@ -97,7 +97,7 @@ public class NativeLoader {
 			if (NativeLoader.class.getClassLoader() == ClassLoader
 				.getSystemClassLoader())
 			{
-				jniExtractor = new DefaultJniExtractor();
+				jniExtractor = new DefaultJniExtractor(null);
 			}
 			else {
 				jniExtractor = new WebappJniExtractor("Classloader");
