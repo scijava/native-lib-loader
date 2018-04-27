@@ -157,7 +157,9 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			libraryJarClass = this.getClass();
 		}
 
-		lib = libraryJarClass.getClassLoader().getResource(libPath + mappedlibName);
+		// foolproof
+		String combinedPath = (libPath.endsWith("/") ? libPath : libPath + "/") + mappedlibName;
+		lib = libraryJarClass.getClassLoader().getResource(combinedPath);
 		if (null == lib) {
 			/*
 			 * On OS X, the default mapping changed from .jnilib to .dylib as of JDK 7, so
@@ -189,10 +191,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			LOGGER.debug("URL path is " + lib.getPath());
 			return extractResource(getJniDir(), lib, mappedlibName);
 		}
-		LOGGER.info("Couldn't find resource " + libPath + " " +
-			mappedlibName);
-		throw new IOException("Couldn't find resource " + libPath + " " +
-			mappedlibName);
+		LOGGER.info("Couldn't find resource " + combinedPath);
+		throw new IOException("Couldn't find resource " + combinedPath);
 	}
 
 	/** {@inheritDoc} */

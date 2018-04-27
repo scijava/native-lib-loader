@@ -122,8 +122,9 @@ public class NativeLoader {
 	 *           specified dynamic library
 	 */
 	public static void loadLibrary(final String libname) throws IOException {
-		// TODO pass in library path or get rid of this method
-		System.load(jniExtractor.extractJni("", libname).getAbsolutePath());
+		String libPath = String.format("META-INF/lib/%s",
+				NativeLibraryUtil.getArchitecture().name().toLowerCase());
+		System.load(jniExtractor.extractJni(libPath, libname).getAbsolutePath());
 	}
 
 	/**
