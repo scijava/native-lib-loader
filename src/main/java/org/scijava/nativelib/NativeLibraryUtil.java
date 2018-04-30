@@ -194,7 +194,7 @@ public class NativeLibraryUtil {
 			case LINUX_64:
 			case LINUX_ARM:
 			case LINUX_ARM64:
-				name = libName + ".so";
+				name = "lib" + libName + ".so";
 				break;
 			case WINDOWS_32:
 			case WINDOWS_64:
