@@ -158,7 +158,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		}
 
 		// foolproof
-		String combinedPath = (libPath.endsWith("/") ? libPath : libPath + "/") + mappedlibName;
+		String combinedPath = (libPath.equals("") || libPath.endsWith("/") ?
+				libPath : libPath + "/") + mappedlibName;
 		lib = libraryJarClass.getClassLoader().getResource(combinedPath);
 		if (null == lib) {
 			/*
