@@ -36,7 +36,11 @@
 
 package org.scijava.nativelib;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Provides a means of loading JNI libraries which are stored within a jar.
@@ -45,7 +49,7 @@ import java.io.IOException;
  * <code>System.load()</code>.
  * <p>
  * The extractor implementation can be replaced, but the default implementation
- * expects to find the library in META-INF/lib/, with its OS-dependent name. It
+ * expects to find the library in natives/, with its OS-dependent name. It
  * extracts the library underneath a temporary directory, whose name is given by
  * the System property "java.library.tmpdir", defaulting to "tmplib".
  * <p>
@@ -111,25 +115,55 @@ public class NativeLoader {
 	/**
 	 * Extract the given library from a jar, and load it.
 	 * <p>
-	 * The default jni extractor expects libraries to be in META-INF/lib/, with
-	 * their platform-dependent name.
+	 * The default jni extractor expects libraries to be in natives/&lt;platform&gt;/
+	 * with their platform-dependent name (e.g. natives/osx_64/libnative.dylib).
+	 * <p>
+	 * If natives/ does not exists or does not contain the directory structure,
+	 * &lt;platform&gt;/&lt;lib_binary&gt; will be searched in the root,
+	 * META-INF/lib/ and <code>searchPaths</code>.
 	 * 
 	 * @param libname platform-independent library name (as would be passed to
 	 *          System.loadLibrary)
+	 * @param searchPaths a list of additional paths relative to the jar's root
+	 * 			to search for the specified native library in case it does not
+	 * 			exist in natives/, root or META-INF/lib/
 	 * @throws IOException if there is a problem extracting the jni library
 	 * @throws SecurityException if a security manager exists and its
 	 *           <code>checkLink</code> method doesn't allow loading of the
 	 *           specified dynamic library
 	 */
-	public static void loadLibrary(final String libname) throws IOException {
+	public static void loadLibrary(final String libname, final String... searchPaths)
+			throws IOException {
 		try {
 			// try to load library from classpath
 			System.loadLibrary(libname);
+			return;
 		} catch (UnsatisfiedLinkError e) {
-			String libPath = String.format("META-INF/lib/%s",
-					NativeLibraryUtil.getArchitecture().name().toLowerCase());
-			System.load(jniExtractor.extractJni(libPath, libname).getAbsolutePath());
+			List<String> libPaths = searchPaths == null ?
+					new LinkedList<String>() :
+					new LinkedList<String>(Arrays.asList(searchPaths));
+			libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
+			// for backward compatibility
+			libPaths.add(1, "");
+			libPaths.add(2, "META-INF" + NativeLibraryUtil.DELIM + "lib");
+			// NB: Although the documented behavior of this method is to load
+			// native library from META-INF/lib/, what it actually does is
+			// to load from the root dir. See: https://github.com/scijava/
+			// native-lib-loader/blob/6c303443cf81bf913b1732d42c74544f61aef5d1/
+			// src/main/java/org/scijava/nativelib/NativeLoader.java#L126
+
+			// search in each path in {natives/, /, META-INF/lib/, ...}
+			for (String libPath : libPaths) {
+				File extracted = jniExtractor.extractJni(
+						NativeLibraryUtil.getPlatformLibraryPath(libPath),
+						libname);
+				if (extracted != null) {
+					System.load(extracted.getAbsolutePath());
+					return;
+				}
+			}
 		}
+		throw new IOException("Couldn't load library library " + libname);
 	}
 
 	/**

@@ -59,7 +59,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.BaseJniExtractor");
 	protected static final String JAVA_TMPDIR = "java.io.tmpdir";
-	protected static final String ALTR_TMPDIR = "./tmplib";
+	protected static final String ALTR_TMPDIR = "."+ NativeLibraryUtil.DELIM + "tmplib";
 	protected static final String TMP_PREFIX = "nativelib-loader_";
 	private static final String LEFTOVER_MIN_AGE = "org.scijava.nativelib.leftoverMinAgeMs";
 	private static final long LEFTOVER_MIN_AGE_DEFAULT = 5 * 60 * 1000; // 5 minutes
@@ -89,10 +89,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
 		if (mxSysInfo != null) {
 			nativeResourcePaths =
-				new String[] { "META-INF/lib/" + mxSysInfo + "/", "META-INF/lib/" };
+				new String[] { "natives/", "META-INF/lib/" + mxSysInfo + "/", "META-INF/lib/" };
 		}
 		else {
-			nativeResourcePaths = new String[] { "META-INF/lib/" };
+			nativeResourcePaths = new String[] { "natives/", "META-INF/lib/" };
 		}
 		// clean up leftover libraries from previous runs
 		deleteLeftoverFiles();
@@ -158,8 +158,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		}
 
 		// foolproof
-		String combinedPath = (libPath.equals("") || libPath.endsWith("/") ?
-				libPath : libPath + "/") + mappedlibName;
+		String combinedPath = (libPath.equals("") || libPath.endsWith(NativeLibraryUtil.DELIM) ?
+				libPath : libPath + NativeLibraryUtil.DELIM) + mappedlibName;
 		lib = libraryJarClass.getClassLoader().getResource(combinedPath);
 		if (null == lib) {
 			/*
@@ -193,7 +193,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			return extractResource(getJniDir(), lib, mappedlibName);
 		}
 		LOGGER.info("Couldn't find resource " + combinedPath);
-		throw new IOException("Couldn't find resource " + combinedPath);
+		return null;
 	}
 
 	/** {@inheritDoc} */

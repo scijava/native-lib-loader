@@ -59,7 +59,7 @@ public class NativeLoaderTest {
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(dummyJar), manifest);
 
 		// with a dummy binary in it
-		File source = new File(String.format("META-INF/lib/%s/%s",
+		File source = new File(String.format("natives/%s/%s",
 				NativeLibraryUtil.getArchitecture().name().toLowerCase(),
 				NativeLibraryUtil.getPlatformLibraryName("dummy")));
 		JarEntry entry = new JarEntry(source.getPath().replace("\\", "/"));
@@ -92,7 +92,7 @@ public class NativeLoaderTest {
 		createJar();
 		// see if dummy is correctly extracted
 		JniExtractor jniExtractor = new DefaultJniExtractor(null);
-		String libPath = String.format("META-INF/lib/%s",
+		String libPath = String.format("natives/%s",
 				NativeLibraryUtil.getArchitecture().name().toLowerCase());
 		File extracted = jniExtractor.extractJni(libPath + "", "dummy");
 
