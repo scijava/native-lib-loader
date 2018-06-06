@@ -57,6 +57,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.BaseJniExtractor");
 	private static final String JAVA_TMPDIR = "java.io.tmpdir";
+	private static final String LEFTOVER_MIN_AGE = "org.scijava.nativelib.leftoverMinAgeMs";
+	private static final long LEFTOVER_MIN_AGE_DEFAULT = 5 * 60 * 1000; // 5 minutes
 	private Class<?> libraryJarClass;
 
 	/**
@@ -264,9 +266,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 * If a temporary shared library is in use by another instance it won't
 	 * delete.
 	 * <p>
-	 * There is a very unlikely race condition if another instance created a
-	 * temporary shared library and now I delete it just before it tries to load
-	 * it.
+	 * An old library will be deleted only if its last modified date is at least
+	 * LEFTOVER_MIN_AGE milliseconds old (default to 5 minutes)
+	 * This was introduced to avoid a possible race condition when two instances (JVMs) run the same unpacking code
+	 * and one of which manage to delete the extracted file of the other before the other gets a chance to load it
 	 * <p>
 	 * Another issue is that createTempFile only guarantees to use the first three
 	 * characters of the prefix, so I could delete a similarly-named temporary
@@ -284,9 +287,16 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			}
 		});
 		if (files == null) return;
+		long leftoverMinAge = getLeftoverMinAge();
 		for (final File file : files) {
 			// attempt to delete
 			try {
+				long age = System.currentTimeMillis() - file.lastModified();
+				if (age < leftoverMinAge) {
+					LOGGER.debug("Not deleting leftover file {}: is {}ms old", file, age);
+					continue;
+				}
+				LOGGER.debug("Deleting leftover file: {}", file);
 				file.delete();
 			}
 			catch (final SecurityException e) {
@@ -295,6 +305,14 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		}
 	}
 
+	long getLeftoverMinAge() {
+		try {
+			return Long.parseLong(System.getProperty(LEFTOVER_MIN_AGE, String.valueOf(LEFTOVER_MIN_AGE_DEFAULT)));
+		} catch (NumberFormatException e) {
+			LOGGER.error("Cannot load leftover minimal age system property", e);
+			return LEFTOVER_MIN_AGE_DEFAULT;
+		}
+	}
 	/**
 	 * copy an InputStream to an OutputStream.
 	 * 
