@@ -34,20 +34,19 @@ Native libraries should be packaged into a single jar file, with the
 following directory & file structure:
 
 ```
-/META-INF
-  /lib
-    /linux_32
-       libxxx[-vvv].so
-    /linux_64
-       libxxx[-vvv].so
-    /osx_32
-       libxxx[-vvv].dylib
-    /osx_64
-       libxxx[-vvv].dylib
-    /windows_32
-       xxx[-vvv].dll
-    /windows_64
-       xxx[-vvv].dll
+/natives
+  /linux_32
+     libxxx[-vvv].so
+  /linux_64
+     libxxx[-vvv].so
+  /osx_32
+     libxxx[-vvv].dylib
+  /osx_64
+     libxxx[-vvv].dylib
+  /windows_32
+     xxx[-vvv].dll
+  /windows_64
+     xxx[-vvv].dll
 ```
 
 Here "xxx" is the name of the native library and "-vvv" is an optional version number.

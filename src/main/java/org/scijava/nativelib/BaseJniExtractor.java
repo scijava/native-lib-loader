@@ -45,7 +45,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Enumeration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,9 +58,12 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.BaseJniExtractor");
-	private static final String JAVA_TMPDIR = "java.io.tmpdir";
+	protected static final String JAVA_TMPDIR = "java.io.tmpdir";
+	protected static final String ALTR_TMPDIR = "."+ NativeLibraryUtil.DELIM + "tmplib";
+	protected static final String TMP_PREFIX = "nativelib-loader_";
 	private static final String LEFTOVER_MIN_AGE = "org.scijava.nativelib.leftoverMinAgeMs";
 	private static final long LEFTOVER_MIN_AGE_DEFAULT = 5 * 60 * 1000; // 5 minutes
+
 	private Class<?> libraryJarClass;
 
 	/**
@@ -84,11 +89,40 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
 		if (mxSysInfo != null) {
 			nativeResourcePaths =
-				new String[] { "META-INF/lib/" + mxSysInfo + "/", "META-INF/lib/" };
+				new String[] { "natives/", "META-INF/lib/" + mxSysInfo + "/", "META-INF/lib/" };
 		}
 		else {
-			nativeResourcePaths = new String[] { "META-INF/lib/" };
+			nativeResourcePaths = new String[] { "natives/", "META-INF/lib/" };
 		}
+		// clean up leftover libraries from previous runs
+		deleteLeftoverFiles();
+	}
+
+	private static boolean deleteRecursively(final File directory) {
+		if (directory == null) return true;
+		final File[] list = directory.listFiles();
+		if (list == null) return true;
+		for (final File file : list) {
+			if (file.isFile()) {
+				if (!file.delete()) return false;
+			}
+			else if (file.isDirectory()) {
+				if (!deleteRecursively(file)) return false;
+			}
+		}
+		return directory.delete();
+	}
+
+	protected static File getTempDir() throws IOException {
+		// creates a temporary directory for hosting extracted files
+		// If system tempdir is not available, use tmplib
+		File tmpDir = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
+		if (!tmpDir.isDirectory()) {
+			tmpDir.mkdirs();
+			if (!tmpDir.isDirectory())
+				throw new IOException("Unable to create temporary directory " + tmpDir);
+		}
+		return Files.createTempDirectory(tmpDir.toPath(), TMP_PREFIX).toFile();
 	}
 
 	/**
@@ -123,7 +157,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			libraryJarClass = this.getClass();
 		}
 
-		lib = libraryJarClass.getClassLoader().getResource(libPath + mappedlibName);
+		// foolproof
+		String combinedPath = (libPath.equals("") || libPath.endsWith(NativeLibraryUtil.DELIM) ?
+				libPath : libPath + NativeLibraryUtil.DELIM) + mappedlibName;
+		lib = libraryJarClass.getClassLoader().getResource(combinedPath);
 		if (null == lib) {
 			/*
 			 * On OS X, the default mapping changed from .jnilib to .dylib as of JDK 7, so
@@ -155,10 +192,8 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			LOGGER.debug("URL path is " + lib.getPath());
 			return extractResource(getJniDir(), lib, mappedlibName);
 		}
-		LOGGER.info("Couldn't find resource " + libPath + " " +
-			mappedlibName);
-		throw new IOException("Couldn't find resource " + libPath + " " +
-			mappedlibName);
+		LOGGER.info("Couldn't find resource " + combinedPath);
+		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -223,27 +258,11 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		final String outputName) throws IOException
 	{
 
-		final InputStream in = resource.openStream(); // TODO there's also a
-																									// getResourceAsStream
+		final InputStream in = resource.openStream();
+		// TODO there's also a getResourceAsStream
 
-		// create a temporary file with same suffix (i.e. ".dylib")
-		String prefix = outputName;
-		String suffix = null;
-		final int lastDotIndex = outputName.lastIndexOf('.');
-		if (-1 != lastDotIndex) {
-			prefix = outputName.substring(0, lastDotIndex);
-			suffix = outputName.substring(lastDotIndex);
-		}
-
-		// clean up leftover libraries from previous runs
-		deleteLeftoverFiles(prefix, suffix);
-
-		// make a temporary file with our prefix and suffix
-		//
-		// (CreateTempFile javadoc only guarantees 3 characters of suffix [due
-		// to 8.3 filename legacy issues]. Theoretically a problem for ".dylib",
-		// but not in practice.)
-		final File outfile = File.createTempFile(prefix, suffix);
+		// make a lib file with exactly the same lib name
+		final File outfile = new File(getJniDir(), outputName);
 		LOGGER.debug("Extracting '" + resource + "' to '" +
 			outfile.getAbsolutePath() + "'");
 
@@ -274,34 +293,26 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 * Another issue is that createTempFile only guarantees to use the first three
 	 * characters of the prefix, so I could delete a similarly-named temporary
 	 * shared library if I haven't loaded it yet.
-	 *
-	 * @param prefix
-	 * @param suffix
 	 */
-	void deleteLeftoverFiles(final String prefix, final String suffix) {
-		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR));
-		final File[] files = tmpDirectory.listFiles(new FilenameFilter() {
+	void deleteLeftoverFiles() {
+		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
+		final File[] folders = tmpDirectory.listFiles(new FilenameFilter() {
 
 			public boolean accept(final File dir, final String name) {
-				return name.startsWith(prefix) && name.endsWith(suffix);
+				return name.startsWith(TMP_PREFIX);
 			}
 		});
-		if (files == null) return;
+		if (folders == null) return;
 		long leftoverMinAge = getLeftoverMinAge();
-		for (final File file : files) {
+		for (final File folder : folders) {
 			// attempt to delete
-			try {
-				long age = System.currentTimeMillis() - file.lastModified();
-				if (age < leftoverMinAge) {
-					LOGGER.debug("Not deleting leftover file {}: is {}ms old", file, age);
-					continue;
-				}
-				LOGGER.debug("Deleting leftover file: {}", file);
-				file.delete();
+			long age = System.currentTimeMillis() - folder.lastModified();
+			if (age < leftoverMinAge) {
+				LOGGER.debug("Not deleting leftover folder {}: is {}ms old", folder, age);
+				continue;
 			}
-			catch (final SecurityException e) {
-				// not likely
-			}
+			LOGGER.debug("Deleting leftover folder: {}", folder);
+			deleteRecursively(folder);
 		}
 	}
 

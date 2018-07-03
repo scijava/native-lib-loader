@@ -54,20 +54,10 @@ public class DefaultJniExtractor extends BaseJniExtractor {
 	 */
 	private File nativeDir;
 
-	public DefaultJniExtractor() throws IOException {
-		super(null);
-		init("tmplib");
-	}
-
-	public DefaultJniExtractor(final Class<?> libraryJarClass, final String tmplib)
-		throws IOException
-	{
+	public DefaultJniExtractor(final Class<?> libraryJarClass) throws IOException {
 		super(libraryJarClass);
-		init(tmplib);
-	}
 
-	void init(final String tmplib) throws IOException {
-		nativeDir = new File(System.getProperty("java.library.tmpdir", tmplib));
+		nativeDir = getTempDir();
 		// Order of operations is such that we do not error if we are racing with
 		// another thread to create the directory.
 		nativeDir.mkdirs();
@@ -75,6 +65,7 @@ public class DefaultJniExtractor extends BaseJniExtractor {
 			throw new IOException(
 				"Unable to create native library working directory " + nativeDir);
 		}
+		nativeDir.deleteOnExit();
 	}
 
 	@Override

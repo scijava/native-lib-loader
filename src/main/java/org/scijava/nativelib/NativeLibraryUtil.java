@@ -81,9 +81,11 @@ public class NativeLibraryUtil {
 		UNKNOWN, INTEL_32, INTEL_64, PPC, ARM, AARCH_64
 	}
 
+	public static final String DELIM = "/";
+	public static final String DEFAULT_SEARCH_PATH = "natives" + DELIM;
+
 	private static Architecture architecture = Architecture.UNKNOWN;
-	private static final String DELIM = "/";
-	private static final String JAVA_TMPDIR = "java.io.tmpdir";
+	private static String archStr = null;
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.NativeLibraryUtil");
 
@@ -172,14 +174,22 @@ public class NativeLibraryUtil {
 
 	/**
 	 * Returns the path to the native library.
+	 * 
+	 * @param searchPath the path to search for &lt;platform&gt; directory.
+	 * 			Pass in <code>null</code> to get default path
+	 * 			(natives/&lt;platform&gt;).
 	 *
 	 * @return path
 	 */
-	public static String getPlatformLibraryPath() {
-		String path = "META-INF" + DELIM + "lib" + DELIM;
-		path += getArchitecture().name().toLowerCase() + DELIM;
-		LOGGER.debug("platform specific path is " + path);
-		return path;
+	public static String getPlatformLibraryPath(String searchPath) {
+		if (archStr == null)
+			archStr = NativeLibraryUtil.getArchitecture().name().toLowerCase();
+
+		// foolproof
+		String fullSearchPath = (searchPath.equals("") || searchPath.endsWith(DELIM) ?
+				searchPath : searchPath + DELIM) + archStr + DELIM;
+		LOGGER.debug("platform specific path is " + fullSearchPath);
+		return fullSearchPath;
 	}
 
 	/**
@@ -195,7 +205,7 @@ public class NativeLibraryUtil {
 			case LINUX_64:
 			case LINUX_ARM:
 			case LINUX_ARM64:
-				name = libName + ".so";
+				name = "lib" + libName + ".so";
 				break;
 			case WINDOWS_32:
 			case WINDOWS_64:
@@ -204,6 +214,8 @@ public class NativeLibraryUtil {
 			case OSX_32:
 			case OSX_64:
 				name = "lib" + libName + ".dylib";
+				break;
+			default:
 				break;
 		}
 		LOGGER.debug("native library name " + name);
@@ -288,14 +300,12 @@ public class NativeLibraryUtil {
 		}
 		else {
 			try {
-				// will extract library to temporary directory
-				final String tmpDirectory = System.getProperty(JAVA_TMPDIR);
 				final JniExtractor jniExtractor =
-					new DefaultJniExtractor(libraryJarClass, tmpDirectory);
+					new DefaultJniExtractor(libraryJarClass);
 
 				// do extraction
 				final File extractedFile =
-					jniExtractor.extractJni(getPlatformLibraryPath(), libName);
+					jniExtractor.extractJni(getPlatformLibraryPath(null), libName);
 
 				// load extracted library from temporary directory
 				System.load(extractedFile.getPath());

@@ -66,7 +66,7 @@ public class WebappJniExtractor extends BaseJniExtractor {
 	 *          subdirectory which will be created.
 	 */
 	public WebappJniExtractor(final String classloaderName) throws IOException {
-		nativeDir = new File(System.getProperty("java.library.tmpdir", "tmplib"));
+		nativeDir = getTempDir();
 		// Order of operations is such thatwe do not error if we are racing with
 		// another thread to create the directory.
 		nativeDir.mkdirs();

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>17.1.1</version>
+		<version>22.3.0</version>
 		<relativePath />
 	</parent>
 
@@ -112,7 +112,6 @@
 	</ciManagement>
 
 	<properties>
-		<scijava.jvm.version>1.5</scijava.jvm.version>
 		<package-name>org.scijava.nativelib</package-name>
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>Board of Regents of the University of
@@ -124,7 +123,6 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.6</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
