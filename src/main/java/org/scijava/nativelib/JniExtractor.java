@@ -50,7 +50,7 @@ public interface JniExtractor {
 	 * @param libPath library path
 	 * @param libname System.loadLibrary() compatible library name
 	 * @return the extracted file
-	 * @throws IOException
+	 * @throws IOException when extracting the desired file failed
 	 */
 	public File extractJni(String libPath, String libname) throws IOException;
 
@@ -58,7 +58,7 @@ public interface JniExtractor {
 	 * Extract all libraries which are registered for auto-extraction to files in
 	 * the temporary directory.
 	 * 
-	 * @throws IOException
+	 * @throws IOException when extracting the desired file failed
 	 */
 	public void extractRegistered() throws IOException;
 }

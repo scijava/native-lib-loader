@@ -118,7 +118,7 @@ public class NativeLoader {
 	 * &lt;platform&gt;/&lt;lib_binary&gt; will be searched in the root,
 	 * META-INF/lib/ and <code>searchPaths</code>.
 	 * 
-	 * @param libname platform-independent library name (as would be passed to
+	 * @param libName platform-independent library name (as would be passed to
 	 *          System.loadLibrary)
 	 * @param searchPaths a list of additional paths relative to the jar's root
 	 * 			to search for the specified native library in case it does not

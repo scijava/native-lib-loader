@@ -41,6 +41,8 @@ public class MxSysInfo {
 	 * Find the mx.sysinfo string for the current jvm
 	 * <p>
 	 * Can be overridden by specifying a mx.sysinfo system property
+	 * 
+	 * @return the specified mx.sysinfo or a guessed one
 	 */
 	public static String getMxSysInfo() {
 		final String mxSysInfo = System.getProperty("mx.sysinfo");
@@ -50,6 +52,8 @@ public class MxSysInfo {
 	/**
 	 * Make a spirited attempt at guessing what the mx.sysinfo for the current jvm
 	 * might be.
+	 * 
+	 * @return the guessed mx.sysinfo
 	 */
 	public static String guessMxSysInfo() {
 		final String arch = System.getProperty("os.arch");
