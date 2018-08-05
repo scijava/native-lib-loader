@@ -192,7 +192,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			LOGGER.debug("URL path is " + lib.getPath());
 			return extractResource(getJniDir(), lib, mappedlibName);
 		}
-		LOGGER.info("Couldn't find resource " + combinedPath);
+		LOGGER.debug("Couldn't find resource " + combinedPath);
 		return null;
 	}
 

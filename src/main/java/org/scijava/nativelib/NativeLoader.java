@@ -36,11 +36,7 @@
 
 package org.scijava.nativelib;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Provides a means of loading JNI libraries which are stored within a jar.
@@ -132,38 +128,17 @@ public class NativeLoader {
 	 *           <code>checkLink</code> method doesn't allow loading of the
 	 *           specified dynamic library
 	 */
-	public static void loadLibrary(final String libname, final String... searchPaths)
+	public static void loadLibrary(final String libName, final String... searchPaths)
 			throws IOException {
 		try {
 			// try to load library from classpath
-			System.loadLibrary(libname);
+			System.loadLibrary(libName);
 			return;
 		} catch (UnsatisfiedLinkError e) {
-			List<String> libPaths = searchPaths == null ?
-					new LinkedList<String>() :
-					new LinkedList<String>(Arrays.asList(searchPaths));
-			libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
-			// for backward compatibility
-			libPaths.add(1, "");
-			libPaths.add(2, "META-INF" + NativeLibraryUtil.DELIM + "lib");
-			// NB: Although the documented behavior of this method is to load
-			// native library from META-INF/lib/, what it actually does is
-			// to load from the root dir. See: https://github.com/scijava/
-			// native-lib-loader/blob/6c303443cf81bf913b1732d42c74544f61aef5d1/
-			// src/main/java/org/scijava/nativelib/NativeLoader.java#L126
-
-			// search in each path in {natives/, /, META-INF/lib/, ...}
-			for (String libPath : libPaths) {
-				File extracted = jniExtractor.extractJni(
-						NativeLibraryUtil.getPlatformLibraryPath(libPath),
-						libname);
-				if (extracted != null) {
-					System.load(extracted.getAbsolutePath());
-					return;
-				}
-			}
+			if (NativeLibraryUtil.loadNativeLibrary(jniExtractor, libName, searchPaths))
+				return;
 		}
-		throw new IOException("Couldn't load library library " + libname);
+		throw new IOException("Couldn't load library library " + libName);
 	}
 
 	/**

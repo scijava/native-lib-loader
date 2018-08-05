@@ -32,6 +32,10 @@ package org.scijava.nativelib;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,42 +290,69 @@ public class NativeLibraryUtil {
 	/**
 	 * Loads the native library.
 	 *
-	 * @param libraryJarClass any class within the library-containing jar
+	 * @param jniExtractor the extractor to use
 	 * @param libName name of library
+	 * @param searchPaths a list of additional paths to search for the library
 	 * @return whether or not successful
 	 */
-	public static boolean loadNativeLibrary(final Class<?> libraryJarClass,
-		final String libName)
+	public static boolean loadNativeLibrary(final JniExtractor jniExtractor,
+		final String libName, final String... searchPaths)
 	{
-		boolean success = false;
-
 		if (Architecture.UNKNOWN == getArchitecture()) {
 			LOGGER.warn("No native library available for this platform.");
 		}
 		else {
 			try {
-				final JniExtractor jniExtractor =
-					new DefaultJniExtractor(libraryJarClass);
+				List<String> libPaths = searchPaths == null ?
+						new LinkedList<String>() :
+						new LinkedList<String>(Arrays.asList(searchPaths));
+				libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
+				// for backward compatibility
+				libPaths.add(1, "");
+				libPaths.add(2, "META-INF" + NativeLibraryUtil.DELIM + "lib");
+				// NB: Although the documented behavior of this method is to load
+				// native library from META-INF/lib/, what it actually does is
+				// to load from the root dir. See: https://github.com/scijava/
+				// native-lib-loader/blob/6c303443cf81bf913b1732d42c74544f61aef5d1/
+				// src/main/java/org/scijava/nativelib/NativeLoader.java#L126
 
-				// do extraction
-				final File extractedFile =
-					jniExtractor.extractJni(getPlatformLibraryPath(null), libName);
-
-				// load extracted library from temporary directory
-				System.load(extractedFile.getPath());
-
-				success = true;
-			}
-			catch (final IOException e) {
-				LOGGER.debug("IOException creating DefaultJniExtractor", e);
-			}
-			catch (final SecurityException e) {
-				LOGGER.debug("Can't load dynamic library", e);
+				// search in each path in {natives/, /, META-INF/lib/, ...}
+				for (String libPath : libPaths) {
+					File extracted = jniExtractor.extractJni(
+							NativeLibraryUtil.getPlatformLibraryPath(libPath),
+							libName);
+					if (extracted != null) {
+						System.load(extracted.getAbsolutePath());
+						return true;
+					}
+				}
 			}
 			catch (final UnsatisfiedLinkError e) {
 				LOGGER.debug("Problem with library", e);
+			} catch (IOException e) {
+				LOGGER.debug("Problem with extracting the library", e);
 			}
 		}
-		return success;
+		return false;
+	}
+
+	/**
+	 * Loads the native library.
+	 *
+	 * @param libraryJarClass any class within the library-containing jar
+	 * @param libName name of library
+	 * @return whether or not successful
+	 */
+	@Deprecated
+	public static boolean loadNativeLibrary(final Class<?> libraryJarClass,
+		final String libName)
+	{
+		try {
+			return NativeLibraryUtil.loadNativeLibrary(new DefaultJniExtractor(libraryJarClass), libName);
+		}
+		catch (final IOException e) {
+			LOGGER.debug("IOException creating DefaultJniExtractor", e);
+		}
+		return false;
 	}
 }
