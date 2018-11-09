@@ -134,12 +134,12 @@ public class NativeLoader {
 		try {
 			// try to load library from classpath
 			System.loadLibrary(libName);
-			return;
-		} catch (UnsatisfiedLinkError e) {
-			if (NativeLibraryUtil.loadNativeLibrary(jniExtractor, libName, searchPaths))
-				return;
 		}
-		throw new IOException("Couldn't load library library " + libName);
+		catch (final UnsatisfiedLinkError e) {
+			if (NativeLibraryUtil.loadNativeLibrary(jniExtractor, libName,
+				searchPaths)) return;
+			throw new IOException("Couldn't load library library " + libName, e);
+		}
 	}
 
 	/**
