@@ -145,7 +145,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		throws IOException
 	{
 		String mappedlibName = System.mapLibraryName(libname);
-		LOGGER.debug("mappedLib is " + mappedlibName);
+		debug("mappedLib is " + mappedlibName);
 		/*
 		 * On Darwin, the default mapping is to .jnilib; but we use .dylibs so that library interdependencies are
 		 * handled correctly. if we don't find a .jnilib, try .dylib instead.
@@ -188,17 +188,17 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		}
 
 		if (null != lib) {
-			LOGGER.debug("URL is " + lib.toString());
-			LOGGER.debug("URL path is " + lib.getPath());
+			debug("URL is " + lib.toString());
+			debug("URL path is " + lib.getPath());
 			return extractResource(getJniDir(), lib, mappedlibName);
 		}
-		LOGGER.debug("Couldn't find resource " + combinedPath);
+		debug("Couldn't find resource " + combinedPath);
 		return null;
 	}
 
 	/** {@inheritDoc} */
 	public void extractRegistered() throws IOException {
-		LOGGER.debug("Extracting libraries registered in classloader " +
+		debug("Extracting libraries registered in classloader " +
 			this.getClass().getClassLoader());
 		for (final String nativeResourcePath : nativeResourcePaths) {
 			final Enumeration<URL> resources =
@@ -214,7 +214,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	private void extractLibrariesFromResource(final URL resource)
 		throws IOException
 	{
-		LOGGER.debug("Extracting libraries listed in " + resource);
+		debug("Extracting libraries listed in " + resource);
 		BufferedReader reader = null;
 		try {
 			reader =
@@ -263,7 +263,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 
 		// make a lib file with exactly the same lib name
 		final File outfile = new File(getJniDir(), outputName);
-		LOGGER.debug("Extracting '" + resource + "' to '" +
+		debug("Extracting '" + resource + "' to '" +
 			outfile.getAbsolutePath() + "'");
 
 		// copy resource stream to temporary file
@@ -308,10 +308,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			// attempt to delete
 			long age = System.currentTimeMillis() - folder.lastModified();
 			if (age < leftoverMinAge) {
-				LOGGER.debug("Not deleting leftover folder {}: is {}ms old", folder, age);
+				debug("Not deleting leftover folder " + folder + ": is " + age + "ms old");
 				continue;
 			}
-			LOGGER.debug("Deleting leftover folder: {}", folder);
+			debug("Deleting leftover folder: " + folder);
 			deleteRecursively(folder);
 		}
 	}
@@ -320,7 +320,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		try {
 			return Long.parseLong(System.getProperty(LEFTOVER_MIN_AGE, String.valueOf(LEFTOVER_MIN_AGE_DEFAULT)));
 		} catch (NumberFormatException e) {
-			LOGGER.error("Cannot load leftover minimal age system property", e);
+			error("Cannot load leftover minimal age system property", e);
 			return LEFTOVER_MIN_AGE_DEFAULT;
 		}
 	}
@@ -343,5 +343,13 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			}
 			out.write(tmp, 0, len);
 		}
+	}
+
+	private static void debug(final String message) {
+		LOGGER.debug(message);
+	}
+
+	private static void error(final String message, final Throwable t) {
+		LOGGER.error(message, t);
 	}
 }
