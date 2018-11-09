@@ -128,8 +128,9 @@ public class NativeLoader {
 	 *           <code>checkLink</code> method doesn't allow loading of the
 	 *           specified dynamic library
 	 */
-	public static void loadLibrary(final String libName, final String... searchPaths)
-			throws IOException {
+	public static void loadLibrary(final String libName,
+		final String... searchPaths) throws IOException
+	{
 		try {
 			// try to load library from classpath
 			System.loadLibrary(libName);
