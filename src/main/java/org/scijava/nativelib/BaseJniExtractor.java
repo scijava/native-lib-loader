@@ -82,7 +82,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		init(libraryJarClass);
 	}
 
-	private void init(final Class<?> libraryJarClass) throws IOException {
+	private void init(final Class<?> libraryJarClass) {
 		this.libraryJarClass = libraryJarClass;
 
 		final String mxSysInfo = MxSysInfo.getMxSysInfo();
@@ -140,7 +140,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 */
 	public abstract File getJniDir();
 
-	/** {@inheritDoc} */
+	@Override
 	public File extractJni(final String libPath, final String libname)
 		throws IOException
 	{
@@ -196,7 +196,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		return null;
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public void extractRegistered() throws IOException {
 		debug("Extracting libraries registered in classloader " +
 			this.getClass().getClassLoader());
@@ -257,25 +257,25 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	File extractResource(final File dir, final URL resource,
 		final String outputName) throws IOException
 	{
+		try (final InputStream in = resource.openStream()) {
+			// TODO there's also a getResourceAsStream
 
-		final InputStream in = resource.openStream();
-		// TODO there's also a getResourceAsStream
+			// make a lib file with exactly the same lib name
+			final File outfile = new File(getJniDir(), outputName);
+			debug("Extracting '" + resource + "' to '" +
+				outfile.getAbsolutePath() + "'");
 
-		// make a lib file with exactly the same lib name
-		final File outfile = new File(getJniDir(), outputName);
-		debug("Extracting '" + resource + "' to '" +
-			outfile.getAbsolutePath() + "'");
+			// copy resource stream to temporary file
+			try (final FileOutputStream out = new FileOutputStream(outfile)) {
+				copy(in, out);
+				out.close();
+			}
 
-		// copy resource stream to temporary file
-		final FileOutputStream out = new FileOutputStream(outfile);
-		copy(in, out);
-		out.close();
-		in.close();
+			// note that this doesn't always work:
+			outfile.deleteOnExit();
 
-		// note that this doesn't always work:
-		outfile.deleteOnExit();
-
-		return outfile;
+			return outfile;
+		}
 	}
 
 	/**
@@ -298,6 +298,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
 		final File[] folders = tmpDirectory.listFiles(new FilenameFilter() {
 
+			@Override
 			public boolean accept(final File dir, final String name) {
 				return name.startsWith(TMP_PREFIX);
 			}
