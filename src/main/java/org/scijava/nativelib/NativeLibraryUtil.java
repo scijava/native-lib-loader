@@ -63,6 +63,12 @@ import org.slf4j.LoggerFactory;
  *     xxx[-vvv].dll
  *   windows_64
  *     xxx[-vvv].dll
+ *   aix_32
+ *     libxxx[-vvv].so
+ *     libxxx[-vvv].a
+ *   aix_64
+ *     libxxx[-vvv].so
+ *     libxxx[-vvv].a
  * </pre>
  * <p>
  * Here "xxx" is the name of the native library and "-vvv" is an optional
