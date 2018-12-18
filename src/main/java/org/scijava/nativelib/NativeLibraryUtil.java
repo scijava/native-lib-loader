@@ -63,6 +63,12 @@ import org.slf4j.LoggerFactory;
  *     xxx[-vvv].dll
  *   windows_64
  *     xxx[-vvv].dll
+ *   aix_32
+ *     libxxx[-vvv].so
+ *     libxxx[-vvv].a
+ *   aix_64
+ *     libxxx[-vvv].so
+ *     libxxx[-vvv].a
  * </pre>
  * <p>
  * Here "xxx" is the name of the native library and "-vvv" is an optional
@@ -77,11 +83,11 @@ public class NativeLibraryUtil {
 
 	public static enum Architecture {
 		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, WINDOWS_32, WINDOWS_64, OSX_32,
-			OSX_64, OSX_PPC
+			OSX_64, OSX_PPC, AIX_32, AIX_64
 	}
 
 	private static enum Processor {
-		UNKNOWN, INTEL_32, INTEL_64, PPC, ARM, AARCH_64
+		UNKNOWN, INTEL_32, INTEL_64, PPC, PPC_64, ARM, AARCH_64
 	}
 
 	public static final String DELIM = "/";
@@ -114,6 +120,14 @@ public class NativeLibraryUtil {
 					}
 					else if (Processor.AARCH_64 == processor) {
 						architecture = Architecture.LINUX_ARM64;
+					}
+				}
+				else if (name.contains("aix")) {
+					if (Processor.PPC == processor) {
+						architecture = Architecture.AIX_32;
+					}
+					else if (Processor.PPC_64 == processor) {
+						architecture = Architecture.AIX_64;
 					}
 				}
 				else if (name.contains("win")) {
@@ -161,7 +175,11 @@ public class NativeLibraryUtil {
 			processor = Processor.AARCH_64;
 		}
 		else if (arch.contains("ppc")) {
-			processor = Processor.PPC;
+			bits = 32;
+			if (arch.contains("64")) {
+				bits = 64;
+			}
+			processor = (32 == bits) ? Processor.PPC : Processor.PPC_64;
 		}
 		else if (arch.contains("86") || arch.contains("amd")) {
 			bits = 32;
@@ -204,6 +222,8 @@ public class NativeLibraryUtil {
 	public static String getPlatformLibraryName(final String libName) {
 		String name = null;
 		switch (getArchitecture()) {
+			case AIX_32:
+			case AIX_64:
 			case LINUX_32:
 			case LINUX_64:
 			case LINUX_ARM:
