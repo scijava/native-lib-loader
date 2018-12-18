@@ -45,7 +45,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Enumeration;
 
 import org.slf4j.Logger;
@@ -122,7 +121,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			if (!tmpDir.isDirectory())
 				throw new IOException("Unable to create temporary directory " + tmpDir);
 		}
-		return Files.createTempDirectory(tmpDir.toPath(), TMP_PREFIX).toFile();
+
+		File tempFile = File.createTempFile(TMP_PREFIX, "");
+		tempFile.delete();
+		return tempFile;
 	}
 
 	/**
