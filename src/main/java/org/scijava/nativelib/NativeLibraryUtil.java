@@ -323,7 +323,7 @@ public class NativeLibraryUtil {
 		else {
 			try {
 				final List<String> libPaths = searchPaths == null ?
-						new LinkedList<>() :
+						new LinkedList<String>() :
 						new LinkedList<>(Arrays.asList(searchPaths));
 				libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
 				// for backward compatibility
