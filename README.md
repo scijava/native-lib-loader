@@ -47,6 +47,12 @@ following directory & file structure:
      xxx[-vvv].dll
   /windows_64
      xxx[-vvv].dll
+  /aix_32
+     libxxx[-vvv].so
+     libxxx[-vvv].a
+  /aix_64
+     libxxx[-vvv].so
+     libxxx[-vvv].a
 ```
 
 Here "xxx" is the name of the native library and "-vvv" is an optional version number.
@@ -60,7 +66,7 @@ convention.
 
 ### Load library
 
-If you want to load 'awesome.dll' (on Windows) or 'libawesome.so' (on Linux),
+If you want to load 'awesome.dll' (on Windows) or 'libawesome.so' (on Linux or AIX),
 simply do like this ...
 
 ```Java
