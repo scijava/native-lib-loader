@@ -117,6 +117,7 @@
 		<license.copyrightOwners>Board of Regents of the University of
 Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
+		<scijava.jvm.version>1.7</scijava.jvm.version>
 	</properties>
 
 	<dependencies>
