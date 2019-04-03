@@ -259,7 +259,9 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	File extractResource(final File dir, final URL resource,
 		final String outputName) throws IOException
 	{
-		try (final InputStream in = resource.openStream()) {
+		InputStream in = null;
+		try {
+			in = resource.openStream();
 			// TODO there's also a getResourceAsStream
 
 			// make a lib file with exactly the same lib name
@@ -268,15 +270,20 @@ public abstract class BaseJniExtractor implements JniExtractor {
 				outfile.getAbsolutePath() + "'");
 
 			// copy resource stream to temporary file
-			try (final FileOutputStream out = new FileOutputStream(outfile)) {
+			FileOutputStream out = null;
+			try {
+				out = new FileOutputStream(outfile);
 				copy(in, out);
-				out.close();
+			} finally {
+				if (out != null) { out.close(); }
 			}
 
 			// note that this doesn't always work:
 			outfile.deleteOnExit();
 
 			return outfile;
+		} finally {
+			if (in != null) { in.close(); }
 		}
 	}
 
