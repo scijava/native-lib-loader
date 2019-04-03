@@ -118,8 +118,6 @@
 Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
 		<scijava.jvm.version>1.6</scijava.jvm.version>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
 		<plugin.animalsniffer.version>1.17</plugin.animalsniffer.version>
 
 	</properties>
