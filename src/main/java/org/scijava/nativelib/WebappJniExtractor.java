@@ -66,13 +66,13 @@ public class WebappJniExtractor extends BaseJniExtractor {
 	 *          subdirectory which will be created.
 	 */
 	public WebappJniExtractor(final String classloaderName) throws IOException {
-		nativeDir = getTempDir();
+		this.nativeDir = getTempDir();
 		// Order of operations is such thatwe do not error if we are racing with
 		// another thread to create the directory.
-		nativeDir.mkdirs();
-		if (!nativeDir.isDirectory()) {
+		this.nativeDir.mkdirs();
+		if (!this.nativeDir.isDirectory()) {
 			throw new IOException(
-				"Unable to create native library working directory " + nativeDir);
+					"Unable to create native library working directory " + this.nativeDir);
 		}
 
 		final long now = System.currentTimeMillis();
@@ -80,8 +80,10 @@ public class WebappJniExtractor extends BaseJniExtractor {
 		int attempt = 0;
 		while (true) {
 			trialJniSubDir =
-				new File(nativeDir, classloaderName + "." + now + "." + attempt);
-			if (trialJniSubDir.mkdir()) break;
+					new File(this.nativeDir, classloaderName + "." + now + "." + attempt);
+			if (trialJniSubDir.mkdir()) {
+				break;
+			}
 			if (trialJniSubDir.exists()) {
 				attempt++;
 				continue;
@@ -89,27 +91,17 @@ public class WebappJniExtractor extends BaseJniExtractor {
 			throw new IOException(
 				"Unable to create native library working directory " + trialJniSubDir);
 		}
-		jniSubDir = trialJniSubDir;
-		jniSubDir.deleteOnExit();
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		final File[] files = jniSubDir.listFiles();
-		for (final File file : files) {
-			file.delete();
-		}
-		jniSubDir.delete();
+		this.jniSubDir = trialJniSubDir;
+		this.jniSubDir.deleteOnExit();
 	}
 
 	@Override
 	public File getJniDir() {
-		return jniSubDir;
+		return this.jniSubDir;
 	}
 
 	@Override
 	public File getNativeDir() {
-		return nativeDir;
+		return this.nativeDir;
 	}
 }

@@ -34,54 +34,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Locale;
-import java.util.jar.*;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NativeLoaderTest {
 
-	@Rule
-	public TemporaryFolder tmpTestDir = new TemporaryFolder();
-
-	// Creates a temporary jar with a dummy lib in it for testing extractiong
-	private void createJar() throws Exception {
-		// create a jar file...
-		File dummyJar = tmpTestDir.newFile("dummy.jar");
-		Manifest manifest = new Manifest();
-		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = null;
-		try {
-			target = new JarOutputStream(new FileOutputStream(dummyJar), manifest);
-
-			// with a dummy binary in it
-			File source = new File(String.format("natives/%s/%s",
-				NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH),
-				NativeLibraryUtil.getPlatformLibraryName("dummy")));
-			JarEntry entry = new JarEntry(source.getPath().replace("\\", "/"));
-			entry.setTime(System.currentTimeMillis());
-			target.putNextEntry(entry);
-
-			// fill the file...
-			byte[] buffer = "native-lib-loader".getBytes();
-			target.write(buffer, 0, buffer.length);
-			target.closeEntry();
-		} finally {
-			if (target != null) { target.close(); }
-		}
-
-		// and add to classpath as if it is a dependency of the project
-		Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-		addURLMethod.setAccessible(true);
-		addURLMethod.invoke(ClassLoader.getSystemClassLoader(), new Object[]{ dummyJar.toURI().toURL() });
-	}
+	private static final Logger LOGGER = LoggerFactory.getLogger(NativeLoaderTest.class);
 
 	@Test(expected = IOException.class)
 	public void exampleHowToUse() throws Exception {
@@ -91,27 +52,23 @@ public class NativeLoaderTest {
 
 	@Test
 	public void testExtracting() throws Exception {
-		// NB: one may want to find a way to remove the used (deleted) jars from
-		// classpath. Otherwise, ClassLoader.getResource will not discover the new
-		// jar if there is another test.
-		createJar();
+		final OsInfo osInfo = DefaultOsInfo.LINUX_X86_64.getOsInfo();
+		final String pathForOsInfo = NativeOsArchUtil.getPathForOsInfo(osInfo);
+
 		// see if dummy is correctly extracted
-		Locale originalLocale = Locale.getDefault();
-		Locale.setDefault(new Locale("tr", "TR"));
-		JniExtractor jniExtractor = new DefaultJniExtractor(null);
-		String libPath = String.format("natives/%s",
-				NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH));
-		File extracted = jniExtractor.extractJni(libPath + "", "dummy");
+		final JniExtractor jniExtractor = new DefaultJniExtractor(null);
+		final String libPath = String.format("natives/%s", pathForOsInfo);
+		final File extracted = jniExtractor.extractJni(libPath + "", "dummy");
+		LOGGER.debug("File to extracted jar: [{}].", extracted.getAbsolutePath());
 
 		FileInputStream in = null;
 		try {
 			in = new FileInputStream(extracted);
-			byte[] buffer = new byte[32];
+			final byte[] buffer = new byte[32];
 			in.read(buffer, 0, buffer.length);
 			assertTrue(new String(buffer).trim().equals("native-lib-loader"));
 		} finally {
 			if (in != null) { in.close(); }
-			Locale.setDefault(originalLocale);
 		}
 	}
 }

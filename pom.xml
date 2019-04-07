@@ -126,6 +126,15 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+
+		<!--Logback for test as implementaiton.-->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -157,6 +166,19 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 					</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<configuration>
+					<additionalClasspathElements>
+						<additionalClasspathElement>
+							${project.build.directory}/test-classes/dummy.jar
+						</additionalClasspathElement>
+					</additionalClasspathElements>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
