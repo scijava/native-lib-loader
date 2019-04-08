@@ -70,7 +70,7 @@ public final class NativeOsArchUtil {
 
 	public static final String OS_FAMILY_LINUX = "linux";
 	public static final String OS_FAMILY_WINDOWS = "windows";
-	public static final String OS_FAMILY_MAC = "mac";
+	public static final String OS_FAMILY_OSX = "osx";
 	public static final String OS_FAMILY_AIX = "aix";
 	public static final String OS_FAMILY_SOLARIS = "solaris";
 	public static final String OS_FAMILY_ZOS = "zos";
@@ -104,7 +104,7 @@ public final class NativeOsArchUtil {
 		}
 
 		if (lowercaseOsName.contains("mac")) {
-			return OS_FAMILY_MAC;
+			return OS_FAMILY_OSX;
 		}
 
 		if (lowercaseOsName.contains("aix")) {
