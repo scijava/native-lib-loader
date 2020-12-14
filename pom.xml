@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>23.2.0</version>
+		<version>26.0.0</version>
 		<relativePath />
 	</parent>
 
 	<artifactId>native-lib-loader</artifactId>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.3.5-SNAPSHOT</version>
 
 	<name>Native Library Loader</name>
 	<description>A library for loading native libraries.</description>
@@ -117,6 +117,9 @@
 		<license.copyrightOwners>Board of Regents of the University of
 Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
+		<scijava.jvm.version>1.6</scijava.jvm.version>
+		<plugin.animalsniffer.version>1.17</plugin.animalsniffer.version>
+
 	</properties>
 
 	<dependencies>
@@ -130,4 +133,32 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+
+	<build>
+		<plugins>
+			<!-- check for java 6 compatiblity -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>${plugin.animalsniffer.version}</version>
+				<configuration>
+					<signature>
+					<groupId>org.codehaus.mojo.signature</groupId>
+					<artifactId>java16</artifactId>
+					<version>1.1</version>
+					</signature>
+				</configuration>
+				<executions>
+					<execution>
+					<id>ensure-java-1.6-class-library</id>
+					<phase>verify</phase>
+					<goals>
+						<goal>check</goal>
+					</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

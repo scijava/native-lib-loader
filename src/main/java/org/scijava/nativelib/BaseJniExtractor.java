@@ -45,7 +45,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Enumeration;
 
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		init(libraryJarClass);
 	}
 
-	private void init(final Class<?> libraryJarClass) throws IOException {
+	private void init(final Class<?> libraryJarClass) {
 		this.libraryJarClass = libraryJarClass;
 
 		final String mxSysInfo = MxSysInfo.getMxSysInfo();
@@ -122,7 +121,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			if (!tmpDir.isDirectory())
 				throw new IOException("Unable to create temporary directory " + tmpDir);
 		}
-		return Files.createTempDirectory(tmpDir.toPath(), TMP_PREFIX).toFile();
+
+		File tempFile = File.createTempFile(TMP_PREFIX, "");
+		tempFile.delete();
+		return tempFile;
 	}
 
 	/**
@@ -140,7 +142,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	 */
 	public abstract File getJniDir();
 
-	/** {@inheritDoc} */
+	@Override
 	public File extractJni(final String libPath, final String libname)
 		throws IOException
 	{
@@ -196,7 +198,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		return null;
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public void extractRegistered() throws IOException {
 		debug("Extracting libraries registered in classloader " +
 			this.getClass().getClassLoader());
@@ -257,25 +259,32 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	File extractResource(final File dir, final URL resource,
 		final String outputName) throws IOException
 	{
+		InputStream in = null;
+		try {
+			in = resource.openStream();
+			// TODO there's also a getResourceAsStream
 
-		final InputStream in = resource.openStream();
-		// TODO there's also a getResourceAsStream
+			// make a lib file with exactly the same lib name
+			final File outfile = new File(getJniDir(), outputName);
+			debug("Extracting '" + resource + "' to '" +
+				outfile.getAbsolutePath() + "'");
 
-		// make a lib file with exactly the same lib name
-		final File outfile = new File(getJniDir(), outputName);
-		debug("Extracting '" + resource + "' to '" +
-			outfile.getAbsolutePath() + "'");
+			// copy resource stream to temporary file
+			FileOutputStream out = null;
+			try {
+				out = new FileOutputStream(outfile);
+				copy(in, out);
+			} finally {
+				if (out != null) { out.close(); }
+			}
 
-		// copy resource stream to temporary file
-		final FileOutputStream out = new FileOutputStream(outfile);
-		copy(in, out);
-		out.close();
-		in.close();
+			// note that this doesn't always work:
+			outfile.deleteOnExit();
 
-		// note that this doesn't always work:
-		outfile.deleteOnExit();
-
-		return outfile;
+			return outfile;
+		} finally {
+			if (in != null) { in.close(); }
+		}
 	}
 
 	/**
@@ -298,6 +307,7 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		final File tmpDirectory = new File(System.getProperty(JAVA_TMPDIR, ALTR_TMPDIR));
 		final File[] folders = tmpDirectory.listFiles(new FilenameFilter() {
 
+			@Override
 			public boolean accept(final File dir, final String name) {
 				return name.startsWith(TMP_PREFIX);
 			}

@@ -56,21 +56,25 @@ public class NativeLoaderTest {
 		File dummyJar = tmpTestDir.newFile("dummy.jar");
 		Manifest manifest = new Manifest();
 		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(dummyJar), manifest);
+		JarOutputStream target = null;
+		try {
+			target = new JarOutputStream(new FileOutputStream(dummyJar), manifest);
 
-		// with a dummy binary in it
-		File source = new File(String.format("natives/%s/%s",
+			// with a dummy binary in it
+			File source = new File(String.format("natives/%s/%s",
 				NativeLibraryUtil.getArchitecture().name().toLowerCase(),
 				NativeLibraryUtil.getPlatformLibraryName("dummy")));
-		JarEntry entry = new JarEntry(source.getPath().replace("\\", "/"));
-		entry.setTime(System.currentTimeMillis());
-		target.putNextEntry(entry);
+			JarEntry entry = new JarEntry(source.getPath().replace("\\", "/"));
+			entry.setTime(System.currentTimeMillis());
+			target.putNextEntry(entry);
 
-		// fill the file...
-		byte[] buffer = "native-lib-loader".getBytes();
-		target.write(buffer, 0, buffer.length);
-		target.closeEntry();
-		target.close();
+			// fill the file...
+			byte[] buffer = "native-lib-loader".getBytes();
+			target.write(buffer, 0, buffer.length);
+			target.closeEntry();
+		} finally {
+			if (target != null) { target.close(); }
+		}
 
 		// and add to classpath as if it is a dependency of the project
 		Method addURLMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
@@ -96,10 +100,14 @@ public class NativeLoaderTest {
 				NativeLibraryUtil.getArchitecture().name().toLowerCase());
 		File extracted = jniExtractor.extractJni(libPath + "", "dummy");
 
-		FileInputStream in = new FileInputStream(extracted);
-		byte[] buffer = new byte[32];
-		in.read(buffer, 0, buffer.length);
-		in.close();
-		assertTrue(new String(buffer).trim().equals("native-lib-loader"));
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(extracted);
+			byte[] buffer = new byte[32];
+			in.read(buffer, 0, buffer.length);
+			assertTrue(new String(buffer).trim().equals("native-lib-loader"));
+		} finally {
+			if (in != null) { in.close(); }
+		}
 	}
 }
