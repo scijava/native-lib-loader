@@ -43,6 +43,8 @@ following directory & file structure:
      libxxx[-vvv].dylib
   /osx_64
      libxxx[-vvv].dylib
+  /osx_arm64
+     libxxx[-vvv].dylib
   /windows_32
      xxx[-vvv].dll
   /windows_64
