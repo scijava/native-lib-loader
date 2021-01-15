@@ -83,7 +83,7 @@ public class NativeLibraryUtil {
 
 	public static enum Architecture {
 		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, WINDOWS_32, WINDOWS_64, OSX_32,
-			OSX_64, OSX_PPC, AIX_32, AIX_64
+			OSX_64, OSX_PPC, OSX_ARM64, AIX_32, AIX_64
 	}
 
 	private static enum Processor {
@@ -144,6 +144,9 @@ public class NativeLibraryUtil {
 					}
 					else if (Processor.INTEL_64 == processor) {
 						architecture = Architecture.OSX_64;
+					}
+					else if (Processor.AARCH_64 == processor) {
+						architecture = Architecture.OSX_ARM64;
 					}
 					else if (Processor.PPC == processor) {
 						architecture = Architecture.OSX_PPC;
@@ -236,6 +239,7 @@ public class NativeLibraryUtil {
 				break;
 			case OSX_32:
 			case OSX_64:
+			case OSX_ARM64:
 				name = "lib" + libName + ".dylib";
 				break;
 			default:
