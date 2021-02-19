@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Enumeration;
 
 import org.slf4j.Logger;
@@ -219,9 +220,9 @@ public abstract class BaseJniExtractor implements JniExtractor {
 		debug("Extracting libraries listed in " + resource);
 		BufferedReader reader = null;
 		try {
-			reader =
-				new BufferedReader(
-					new InputStreamReader(resource.openStream(), "UTF-8"));
+			URLConnection connection = resource.openConnection();
+			connection.setUseCaches(false);
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 			for (String line; (line = reader.readLine()) != null;) {
 				URL lib = null;
 				for (final String nativeResourcePath : nativeResourcePaths) {
@@ -261,7 +262,9 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	{
 		InputStream in = null;
 		try {
-			in = resource.openStream();
+			URLConnection connection = resource.openConnection();
+			connection.setUseCaches(false);
+			in = connection.getInputStream();
 			// TODO there's also a getResourceAsStream
 
 			// make a lib file with exactly the same lib name
