@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +108,7 @@ public class NativeLibraryUtil {
 		if (Architecture.UNKNOWN == architecture) {
 			final Processor processor = getProcessor();
 			if (Processor.UNKNOWN != processor) {
-				final String name = System.getProperty("os.name").toLowerCase();
+				final String name = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 				if (name.contains("nix") || name.contains("nux")) {
 					if (Processor.INTEL_32 == processor) {
 						architecture = Architecture.LINUX_32;
@@ -155,7 +156,7 @@ public class NativeLibraryUtil {
 			}
 		}
 		LOGGER.debug("architecture is " + architecture + " os.name is " +
-			System.getProperty("os.name").toLowerCase());
+			System.getProperty("os.name").toLowerCase(Locale.ENGLISH));
 		return architecture;
 	}
 
@@ -169,7 +170,7 @@ public class NativeLibraryUtil {
 		int bits;
 
 		// Note that this is actually the architecture of the installed JVM.
-		final String arch = System.getProperty("os.arch").toLowerCase();
+		final String arch = System.getProperty("os.arch").toLowerCase(Locale.ENGLISH);
 
 		if (arch.contains("arm")) {
 			processor = Processor.ARM;
@@ -192,7 +193,7 @@ public class NativeLibraryUtil {
 			processor = (32 == bits) ? Processor.INTEL_32 : Processor.INTEL_64;
 		}
 		LOGGER.debug("processor is " + processor + " os.arch is " +
-			System.getProperty("os.arch").toLowerCase());
+			System.getProperty("os.arch").toLowerCase(Locale.ENGLISH));
 		return processor;
 	}
 
@@ -207,7 +208,7 @@ public class NativeLibraryUtil {
 	 */
 	public static String getPlatformLibraryPath(String searchPath) {
 		if (archStr == null)
-			archStr = NativeLibraryUtil.getArchitecture().name().toLowerCase();
+			archStr = NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH);
 
 		// foolproof
 		String fullSearchPath = (searchPath.equals("") || searchPath.endsWith(DELIM) ?
