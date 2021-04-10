@@ -96,6 +96,8 @@ public class NativeLoaderTest {
 		// jar if there is another test.
 		createJar();
 		// see if dummy is correctly extracted
+		Locale originalLocale = Locale.getDefault();
+		Locale.setDefault(new Locale("tr", "TR"));
 		JniExtractor jniExtractor = new DefaultJniExtractor(null);
 		String libPath = String.format("natives/%s",
 				NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH));
@@ -109,6 +111,7 @@ public class NativeLoaderTest {
 			assertTrue(new String(buffer).trim().equals("native-lib-loader"));
 		} finally {
 			if (in != null) { in.close(); }
+			Locale.setDefault(originalLocale);
 		}
 	}
 }
