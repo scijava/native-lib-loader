@@ -119,10 +119,6 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
 		<scijava.jvm.version>1.6</scijava.jvm.version>
 		<plugin.animalsniffer.version>1.17</plugin.animalsniffer.version>
-
-
-		<!-- NB: Deploy releases to the SciJava Maven repository. -->
-		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 	</properties>
 
 	<dependencies>
