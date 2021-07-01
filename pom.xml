@@ -107,8 +107,8 @@
 		<url>https://github.com/scijava/native-lib-loader/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Travis CI</system>
-		<url>https://travis-ci.org/scijava/native-lib-loader</url>
+		<system>GitHub Actions</system>
+		<url>https://github.com/scijava/native-lib-loader/actions</url>
 	</ciManagement>
 
 	<properties>
@@ -120,6 +120,9 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 		<scijava.jvm.version>1.6</scijava.jvm.version>
 		<plugin.animalsniffer.version>1.17</plugin.animalsniffer.version>
 
+
+		<!-- NB: Deploy releases to the SciJava Maven repository. -->
+		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 	</properties>
 
 	<dependencies>

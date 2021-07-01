@@ -1,5 +1,5 @@
 [![](https://img.shields.io/maven-central/v/org.scijava/native-lib-loader.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.scijava%22%20AND%20a%3A%22native-lib-loader%22)
-[![](https://travis-ci.org/scijava/native-lib-loader.svg?branch=master)](https://travis-ci.org/scijava/native-lib-loader)
+[![](https://github.com/scijava/native-lib-loader/actions/workflows/build-main.yml/badge.svg)](https://github.com/scijava/native-lib-loader/actions/workflows/build-main.yml)
 
 # About native library loader
 
