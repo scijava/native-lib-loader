@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Locale;
 import java.util.jar.*;
 
 import org.junit.Rule;
@@ -62,7 +63,7 @@ public class NativeLoaderTest {
 
 			// with a dummy binary in it
 			File source = new File(String.format("natives/%s/%s",
-				NativeLibraryUtil.getArchitecture().name().toLowerCase(),
+				NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH),
 				NativeLibraryUtil.getPlatformLibraryName("dummy")));
 			JarEntry entry = new JarEntry(source.getPath().replace("\\", "/"));
 			entry.setTime(System.currentTimeMillis());
@@ -95,9 +96,11 @@ public class NativeLoaderTest {
 		// jar if there is another test.
 		createJar();
 		// see if dummy is correctly extracted
+		Locale originalLocale = Locale.getDefault();
+		Locale.setDefault(new Locale("tr", "TR"));
 		JniExtractor jniExtractor = new DefaultJniExtractor(null);
 		String libPath = String.format("natives/%s",
-				NativeLibraryUtil.getArchitecture().name().toLowerCase());
+				NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH));
 		File extracted = jniExtractor.extractJni(libPath + "", "dummy");
 
 		FileInputStream in = null;
@@ -108,6 +111,7 @@ public class NativeLoaderTest {
 			assertTrue(new String(buffer).trim().equals("native-lib-loader"));
 		} finally {
 			if (in != null) { in.close(); }
+			Locale.setDefault(originalLocale);
 		}
 	}
 }
