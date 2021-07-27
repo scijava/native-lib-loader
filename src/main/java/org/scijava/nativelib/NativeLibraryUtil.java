@@ -30,12 +30,15 @@
 
 package org.scijava.nativelib;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,121 +83,25 @@ import org.slf4j.LoggerFactory;
  *
  * @author Aivar Grislis
  */
-public class NativeLibraryUtil {
-
-	public static enum Architecture {
-		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, WINDOWS_32, WINDOWS_64, OSX_32,
-			OSX_64, OSX_PPC, OSX_ARM64, AIX_32, AIX_64
-	}
-
-	private static enum Processor {
-		UNKNOWN, INTEL_32, INTEL_64, PPC, PPC_64, ARM, AARCH_64
-	}
+public final class NativeLibraryUtil {
 
 	public static final String DELIM = "/";
 	public static final String DEFAULT_SEARCH_PATH = "natives" + DELIM;
 
-	private static Architecture architecture = Architecture.UNKNOWN;
-	private static String archStr = null;
 	private static final Logger LOGGER = LoggerFactory.getLogger(
 		"org.scijava.nativelib.NativeLibraryUtil");
 
-	/**
-	 * Determines the underlying hardware platform and architecture.
-	 *
-	 * @return enumerated architecture value
-	 */
-	public static Architecture getArchitecture() {
-		if (Architecture.UNKNOWN == architecture) {
-			final Processor processor = getProcessor();
-			if (Processor.UNKNOWN != processor) {
-				final String name = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-				if (name.contains("nix") || name.contains("nux")) {
-					if (Processor.INTEL_32 == processor) {
-						architecture = Architecture.LINUX_32;
-					}
-					else if (Processor.INTEL_64 == processor) {
-						architecture = Architecture.LINUX_64;
-					}
-					else if (Processor.ARM == processor) {
-						architecture = Architecture.LINUX_ARM;
-					}
-					else if (Processor.AARCH_64 == processor) {
-						architecture = Architecture.LINUX_ARM64;
-					}
-				}
-				else if (name.contains("aix")) {
-					if (Processor.PPC == processor) {
-						architecture = Architecture.AIX_32;
-					}
-					else if (Processor.PPC_64 == processor) {
-						architecture = Architecture.AIX_64;
-					}
-				}
-				else if (name.contains("win")) {
-					if (Processor.INTEL_32 == processor) {
-						architecture = Architecture.WINDOWS_32;
-					}
-					else if (Processor.INTEL_64 == processor) {
-						architecture = Architecture.WINDOWS_64;
-					}
-				}
-				else if (name.contains("mac")) {
-					if (Processor.INTEL_32 == processor) {
-						architecture = Architecture.OSX_32;
-					}
-					else if (Processor.INTEL_64 == processor) {
-						architecture = Architecture.OSX_64;
-					}
-					else if (Processor.AARCH_64 == processor) {
-						architecture = Architecture.OSX_ARM64;
-					}
-					else if (Processor.PPC == processor) {
-						architecture = Architecture.OSX_PPC;
-					}
-				}
-			}
+	private static class OsInfoHolder {
+		private static final OsInfoHolder INSTANCE = new OsInfoHolder();
+		private final OsInfo osInfo;
+
+		OsInfoHolder() {
+			this.osInfo = OsInfoFactory.fromCurrent();
 		}
-		LOGGER.debug("architecture is " + architecture + " os.name is " +
-			System.getProperty("os.name").toLowerCase(Locale.ENGLISH));
-		return architecture;
 	}
 
-	/**
-	 * Determines what processor is in use.
-	 *
-	 * @return The processor in use.
-	 */
-	private static Processor getProcessor() {
-		Processor processor = Processor.UNKNOWN;
-		int bits;
-
-		// Note that this is actually the architecture of the installed JVM.
-		final String arch = System.getProperty("os.arch").toLowerCase(Locale.ENGLISH);
-
-		if (arch.contains("arm")) {
-			processor = Processor.ARM;
-		}
-		else if (arch.contains("aarch64")) {
-			processor = Processor.AARCH_64;
-		}
-		else if (arch.contains("ppc")) {
-			bits = 32;
-			if (arch.contains("64")) {
-				bits = 64;
-			}
-			processor = (32 == bits) ? Processor.PPC : Processor.PPC_64;
-		}
-		else if (arch.contains("86") || arch.contains("amd")) {
-			bits = 32;
-			if (arch.contains("64")) {
-				bits = 64;
-			}
-			processor = (32 == bits) ? Processor.INTEL_32 : Processor.INTEL_64;
-		}
-		LOGGER.debug("processor is " + processor + " os.arch is " +
-			System.getProperty("os.arch").toLowerCase(Locale.ENGLISH));
-		return processor;
+	private NativeLibraryUtil() {
+		// utility class.
 	}
 
 	/**
@@ -206,48 +113,27 @@ public class NativeLibraryUtil {
 	 *
 	 * @return path
 	 */
-	public static String getPlatformLibraryPath(String searchPath) {
-		if (archStr == null)
-			archStr = NativeLibraryUtil.getArchitecture().name().toLowerCase(Locale.ENGLISH);
+	public static List<String> getPlatformLibraryPath(final String searchPath, final OsInfo osInfo) {
+		final DefaultOsInfoPathMapping instance = DefaultOsInfoPathMapping.INSTANCE;
+		final Map<OsInfo, List<String>> mapping = instance.getMapping();
+		// TODO: Allow users to add mappings from a config (.properties) file or from a parameter.
+		final List<String> archPaths = mapping.get(osInfo);
 
-		// foolproof
-		String fullSearchPath = (searchPath.equals("") || searchPath.endsWith(DELIM) ?
-				searchPath : searchPath + DELIM) + archStr + DELIM;
-		LOGGER.debug("platform specific path is " + fullSearchPath);
-		return fullSearchPath;
-	}
-
-	/**
-	 * Returns the full file name (without path) of the native library.
-	 *
-	 * @param libName name of library
-	 * @return file name
-	 */
-	public static String getPlatformLibraryName(final String libName) {
-		String name = null;
-		switch (getArchitecture()) {
-			case AIX_32:
-			case AIX_64:
-			case LINUX_32:
-			case LINUX_64:
-			case LINUX_ARM:
-			case LINUX_ARM64:
-				name = "lib" + libName + ".so";
-				break;
-			case WINDOWS_32:
-			case WINDOWS_64:
-				name = libName + ".dll";
-				break;
-			case OSX_32:
-			case OSX_64:
-			case OSX_ARM64:
-				name = "lib" + libName + ".dylib";
-				break;
-			default:
-				break;
+		if (null == searchPath) {
+			return unmodifiableList(archPaths);
 		}
-		LOGGER.debug("native library name " + name);
-		return name;
+
+		String fixedSearchPath = searchPath;
+		if (!searchPath.endsWith(DELIM)) {
+			fixedSearchPath = searchPath + DELIM;
+		}
+
+		final List<String> searchPaths = new ArrayList<String>();
+		for (final String archPath : archPaths) {
+			searchPaths.add(fixedSearchPath + archPath + DELIM);
+		}
+
+		return unmodifiableList(searchPaths);
 	}
 
 	/**
@@ -322,28 +208,26 @@ public class NativeLibraryUtil {
 	public static boolean loadNativeLibrary(final JniExtractor jniExtractor,
 		final String libName, final String... searchPaths)
 	{
-		if (Architecture.UNKNOWN == getArchitecture()) {
-			LOGGER.warn("No native library available for this platform.");
-		}
-		else {
-			try {
-				final List<String> libPaths = searchPaths == null ?
-						new LinkedList<String>() :
-						new LinkedList<String>(Arrays.asList(searchPaths));
-				libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
-				// for backward compatibility
-				libPaths.add(1, "");
-				libPaths.add(2, "META-INF" + NativeLibraryUtil.DELIM + "lib");
-				// NB: Although the documented behavior of this method is to load
-				// native library from META-INF/lib/, what it actually does is
-				// to load from the root dir. See: https://github.com/scijava/
-				// native-lib-loader/blob/6c303443cf81bf913b1732d42c74544f61aef5d1/
-				// src/main/java/org/scijava/nativelib/NativeLoader.java#L126
+		try {
+			final List<String> libPaths = searchPaths == null ?
+					new LinkedList<String>() :
+					new LinkedList<String>(Arrays.asList(searchPaths));
+			libPaths.add(0, NativeLibraryUtil.DEFAULT_SEARCH_PATH);
+			// for backward compatibility
+			libPaths.add(1, "");
+			libPaths.add(2, "META-INF" + NativeLibraryUtil.DELIM + "lib");
+			// NB: Although the documented behavior of this method is to load
+			// native library from META-INF/lib/, what it actually does is
+			// to load from the root dir. See: https://github.com/scijava/
+			// native-lib-loader/blob/6c303443cf81bf913b1732d42c74544f61aef5d1/
+			// src/main/java/org/scijava/nativelib/NativeLoader.java#L126
 
-				// search in each path in {natives/, /, META-INF/lib/, ...}
-				for (String libPath : libPaths) {
-					File extracted = jniExtractor.extractJni(
-							NativeLibraryUtil.getPlatformLibraryPath(libPath),
+			// search in each path in {natives/, /, META-INF/lib/, ...}
+			for (final String libPath : libPaths) {
+				final List<String> archPathes = NativeLibraryUtil.getPlatformLibraryPath(libPath, OsInfoHolder.INSTANCE.osInfo);
+				for (final String archPath : archPathes) {
+					final File extracted = jniExtractor.extractJni(
+							archPath,
 							libName);
 					if (extracted != null) {
 						System.load(extracted.getAbsolutePath());
@@ -351,11 +235,10 @@ public class NativeLibraryUtil {
 					}
 				}
 			}
-			catch (final UnsatisfiedLinkError e) {
-				LOGGER.debug("Problem with library", e);
-			} catch (IOException e) {
-				LOGGER.debug("Problem with extracting the library", e);
-			}
+		} catch (final UnsatisfiedLinkError e) {
+			LOGGER.debug("Problem with library", e);
+		} catch (final IOException e) {
+			LOGGER.debug("Problem with extracting the library", e);
 		}
 		return false;
 	}

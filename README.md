@@ -35,24 +35,26 @@ following directory & file structure:
 
 ```
 /natives
-  /linux_32
+  /linux-x86_32-32
      libxxx[-vvv].so
-  /linux_64
+  /linux-x86_64-64
      libxxx[-vvv].so
-  /osx_32
+  /osx-x86_32-32
      libxxx[-vvv].dylib
-  /osx_64
+  /osx-x86_64-64
      libxxx[-vvv].dylib
-  /osx_arm64
+  /osx-aarch_64-64
      libxxx[-vvv].dylib
-  /windows_32
+  /windows_x86_32-32
      xxx[-vvv].dll
-  /windows_64
+  /windows-x86_64-64
      xxx[-vvv].dll
-  /aix_32
+  /windows-itanium_64-64
+     xxx[-vvv].dll
+  /aix_ppc_32-32
      libxxx[-vvv].so
      libxxx[-vvv].a
-  /aix_64
+  /aix_ppc_64-64
      libxxx[-vvv].so
      libxxx[-vvv].a
 ```
