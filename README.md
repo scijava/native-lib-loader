@@ -49,6 +49,8 @@ following directory & file structure:
      xxx[-vvv].dll
   /windows_64
      xxx[-vvv].dll
+  /windows_arm64
+     xxx[-vvv].dll
   /aix_32
      libxxx[-vvv].so
      libxxx[-vvv].a
