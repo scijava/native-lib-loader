@@ -97,7 +97,7 @@
 	</mailingLists>
 
 	<scm>
-		<connection>scm:git:git://github.com/scijava/native-lib-loader</connection>
+		<connection>scm:git:https://github.com/scijava/native-lib-loader</connection>
 		<developerConnection>scm:git:git@github.com:scijava/native-lib-loader</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/scijava/native-lib-loader</url>
