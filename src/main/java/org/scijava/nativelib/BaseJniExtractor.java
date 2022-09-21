@@ -260,6 +260,10 @@ public abstract class BaseJniExtractor implements JniExtractor {
 	File extractResource(final File dir, final URL resource,
 		final String outputName) throws IOException
 	{
+		final File outfile = new File(getJniDir(), outputName);
+		if (outfile.exists()) {
+			return outfile;
+		}
 		InputStream in = null;
 		try {
 			URLConnection connection = resource.openConnection();
@@ -268,7 +272,6 @@ public abstract class BaseJniExtractor implements JniExtractor {
 			// TODO there's also a getResourceAsStream
 
 			// make a lib file with exactly the same lib name
-			final File outfile = new File(getJniDir(), outputName);
 			debug("Extracting '" + resource + "' to '" +
 				outfile.getAbsolutePath() + "'");
 
