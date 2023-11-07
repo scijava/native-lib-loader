@@ -56,6 +56,10 @@ import org.slf4j.LoggerFactory;
  *     libxxx[-vvv].so
  *   linux_arm64
  *     libxxx[-vvv].so
+ *   linux_riscv32
+ *     libxxx[-vvv].so
+ *   linux_riscv64
+ *     libxxx[-vvv].so
  *   osx_32
  *     libxxx[-vvv].dylib
  *   osx_64
@@ -83,12 +87,13 @@ import org.slf4j.LoggerFactory;
 public class NativeLibraryUtil {
 
 	public static enum Architecture {
-		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, WINDOWS_32, WINDOWS_64, WINDOWS_ARM64,
-			OSX_32, OSX_64, OSX_PPC, OSX_ARM64, AIX_32, AIX_64
+		UNKNOWN, LINUX_32, LINUX_64, LINUX_ARM, LINUX_ARM64, LINUX_RISCV32, LINUX_RISCV64,
+		WINDOWS_32, WINDOWS_64, WINDOWS_ARM64,
+		OSX_32, OSX_64, OSX_PPC, OSX_ARM64, AIX_32, AIX_64
 	}
 
 	private static enum Processor {
-		UNKNOWN, INTEL_32, INTEL_64, PPC, PPC_64, ARM, AARCH_64
+		UNKNOWN, INTEL_32, INTEL_64, PPC, PPC_64, ARM, AARCH_64, RISCV_32, RISCV_64
 	}
 
 	public static final String DELIM = "/";
@@ -121,6 +126,12 @@ public class NativeLibraryUtil {
 					}
 					else if (Processor.AARCH_64 == processor) {
 						architecture = Architecture.LINUX_ARM64;
+					}
+					else if (Processor.RISCV_32 == processor) {
+						architecture = Architecture.LINUX_RISCV32;
+					}
+					else if (Processor.RISCV_64 == processor) {
+						architecture = Architecture.LINUX_RISCV64;
 					}
 				}
 				else if (name.contains("aix")) {
@@ -195,6 +206,13 @@ public class NativeLibraryUtil {
 			}
 			processor = (32 == bits) ? Processor.INTEL_32 : Processor.INTEL_64;
 		}
+		else if (arch.contains("riscv")) {
+			bits = 32;
+			if (arch.contains("64")) {
+				bits = 64;
+			}
+			processor = (32 == bits) ? Processor.RISCV_32 : Processor.RISCV_64;
+		}
 		LOGGER.debug("processor is " + processor + " os.arch is " +
 			System.getProperty("os.arch").toLowerCase(Locale.ENGLISH));
 		return processor;
@@ -235,6 +253,8 @@ public class NativeLibraryUtil {
 			case LINUX_64:
 			case LINUX_ARM:
 			case LINUX_ARM64:
+			case LINUX_RISCV32:
+			case LINUX_RISCV64:
 				name = "lib" + libName + ".so";
 				break;
 			case WINDOWS_32:
