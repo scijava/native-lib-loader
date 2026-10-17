@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>37.0.0</version>
+		<version>45.1.0</version>
 		<relativePath />
 	</parent>
 
@@ -31,7 +31,7 @@
 		<developer>
 			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
-			<url>https://imagej.net/User:Rueden</url>
+			<url>https://imagej.net/people/ctrueden</url>
 			<roles>
 				<role>lead</role>
 				<role>developer</role>
@@ -45,28 +45,28 @@
 	<contributors>
 		<contributor>
 			<name>Aivar Grislis</name>
-			<url>https://imagej.net/User:Grislis</url>
+			<url>https://imagej.net/people/grislis</url>
 			<roles><role>founder</role></roles>
 			<properties><id>grislis</id></properties>
 		</contributor>
 		<contributor>
 			<name>Johannes Schindelin</name>
-			<url>https://imagej.net/User:Schindelin</url>
+			<url>https://imagej.net/people/dscho</url>
 			<properties><id>dscho</id></properties>
 		</contributor>
 		<contributor>
 			<name>Mark Hiner</name>
-			<url>https://imagej.net/User:Hinerm</url>
+			<url>https://imagej.net/people/hinerm</url>
 			<properties><id>hinerm</id></properties>
 		</contributor>
 		<contributor>
 			<name>Melissa Linkert</name>
-			<url>https://imagej.net/User:Linkert</url>
+			<url>https://imagej.net/people/melissalinkert</url>
 			<properties><id>melissalinkert</id></properties>
 		</contributor>
 		<contributor>
 			<name>Sebastien Besson</name>
-			<url>https://imagej.net/User:Sbesson</url>
+			<url>https://imagej.net/people/sbesson</url>
 			<properties><id>sbesson</id></properties>
 		</contributor>
 		<contributor>
@@ -114,11 +114,9 @@
 	<properties>
 		<package-name>org.scijava.nativelib</package-name>
 		<license.licenseName>bsd_2</license.licenseName>
-		<license.copyrightOwners>Board of Regents of the University of
-Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
+		<license.copyrightOwners>SciJava developers.</license.copyrightOwners>
 		<license.projectName>Native library loader for extracting and loading native libraries from Java.</license.projectName>
-		<scijava.jvm.version>1.6</scijava.jvm.version>
-		<plugin.animalsniffer.version>1.17</plugin.animalsniffer.version>
+		<scijava.jvm.version>8</scijava.jvm.version>
 	</properties>
 
 	<dependencies>
@@ -132,32 +130,4 @@ Wisconsin-Madison and Glencoe Software, Inc.</license.copyrightOwners>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-
-	<build>
-		<plugins>
-			<!-- check for java 6 compatiblity -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>animal-sniffer-maven-plugin</artifactId>
-				<version>${plugin.animalsniffer.version}</version>
-				<configuration>
-					<signature>
-					<groupId>org.codehaus.mojo.signature</groupId>
-					<artifactId>java16</artifactId>
-					<version>1.1</version>
-					</signature>
-				</configuration>
-				<executions>
-					<execution>
-					<id>ensure-java-1.6-class-library</id>
-					<phase>verify</phase>
-					<goals>
-						<goal>check</goal>
-					</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
