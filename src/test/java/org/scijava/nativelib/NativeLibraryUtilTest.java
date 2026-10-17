@@ -2,8 +2,7 @@
  * #%L
  * Native library loader for extracting and loading native libraries from Java.
  * %%
- * Copyright (C) 2010 - 2023 Board of Regents of the University of
- * Wisconsin-Madison and Glencoe Software, Inc.
+ * Copyright (C) 2010 - 2026 SciJava developers.
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

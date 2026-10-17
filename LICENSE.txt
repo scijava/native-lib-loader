@@ -1,5 +1,4 @@
-Copyright (c) 2010 - 2023, Board of Regents of the University of
-Wisconsin-Madison and Glencoe Software, Inc.
+Copyright (c) 2010 - 2026, SciJava developers.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
